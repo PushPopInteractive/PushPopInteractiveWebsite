@@ -291,7 +291,10 @@ def build_index():
     cards = ""
     for g in GAMES:
         try_btn = ""
-        if os.path.exists(f"{ROOT}/play/{g['slug']}.html"):
+        if os.path.exists(f"{ROOT}/play/{g['slug']}/index.html"):
+            try_btn = f"""
+          <a class="try-btn" href="/play/{g['slug']}/">\u25b6 Try it now!</a>"""
+        elif os.path.exists(f"{ROOT}/play/{g['slug']}.html"):
             try_btn = f"""
           <a class="try-btn" href="/play/{g['slug']}.html">\u25b6 Try it now!</a>"""
         cards += f"""
@@ -366,7 +369,10 @@ def build_index():
 def build_game(g):
     label, _k = STATUS[g["status"]]
     try_row = ""
-    if os.path.exists(f"{ROOT}/play/{g['slug']}.html"):
+    if os.path.exists(f"{ROOT}/play/{g['slug']}/index.html"):
+        try_row = f"""<div class="try-row"><a class="btn" href="/play/{g['slug']}/">\u25b6 Try it now \u2014 playable sneak peek</a></div>
+"""
+    elif os.path.exists(f"{ROOT}/play/{g['slug']}.html"):
         try_row = f"""<div class="try-row"><a class="btn" href="/play/{g['slug']}.html">\u25b6 Try it now \u2014 playable sneak peek</a></div>
 """
     prose = "".join(f"\n      <p>{esc(p)}</p>" for p in g["desc"])

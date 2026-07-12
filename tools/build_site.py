@@ -176,6 +176,18 @@ GAMES = [
         ],
         shots=[],
     ),
+    dict(
+        slug="local-myth", name="Local Myth", status="dev",
+        media="blur",
+        tagline="An AI dungeon master of your very own.",
+        one="Solo RPG adventures run by an AI dungeon master — private on your own machine, or in the cloud when you roam.",
+        tags=["AI Dungeon Master", "Solo RPG", "Mac & iPhone"],
+        desc=[
+            "Local Myth is a solo RPG adventure engine for Mac and iPhone. An AI dungeon master runs your table through a three-role pipeline: an Archivist keeps your canon straight, a Director shapes each scene, and a Narrator streams the story onto the page as it's written.",
+            "Pick the brain behind the screen — run everything privately on your own machine, free and offline, or switch to the cloud and adventure anywhere. Campaign templates, table-talk with the DM, a living canon you can inspect, generated scene art, and voices that read the tale aloud.",
+        ],
+        shots=[],
+    ),
 ]
 
 STATUS = {

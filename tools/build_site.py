@@ -154,7 +154,7 @@ GAMES = [
     ),
     dict(
         slug="rats", name="Resurrected as the System?!", status="dev",
-        media="icon",
+        media="cover",
         tagline="You're not the hero. You're the System.",
         one="An 8-bit, NES-era RPG with a twist: you were isekai'd as the System itself. Recruit heroes. Manage them. Nag them to victory.",
         tags=["Retro RPG", "8-Bit", "Isekai"],

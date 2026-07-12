@@ -130,7 +130,7 @@ GAMES = [
     ),
     dict(
         slug="shorewood-days", name="Shorewood Days", status="dev",
-        media="icon",
+        media="pad",
         tagline="Slow days. Small mysteries.",
         one="A cozy beach-house life & mystery game set in the seaside village of Shorewood.",
         tags=["Cozy", "Life Sim", "Mystery"],

@@ -142,7 +142,7 @@ GAMES = [
     ),
     dict(
         slug="yahiko-no", name="Yahiko, NO!", status="dev",
-        media="icon",
+        media="cover",
         tagline="The cat is not sorry.",
         one="A cozy, chaotic domestic-disaster arcade roguelike. Mom catches, Yahiko the Siamese weaponizes gravity.",
         tags=["Arcade Roguelike", "Cozy Chaos", "Cat Physics"],

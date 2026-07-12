@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<title>Orbcrash — Sneak Peek | PushPop Interactive</title>
+<meta name="description" content="Playable sneak peek of Orbcrash: swap jelly orbs, merge colours, burst cascades, unleash ORBFALL.">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html, body { height:100%; }
+  body {
+    background:#0a0a14;
+    color:#e8e8f4;
+    font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    height:100dvh;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+    user-select:none;
+    -webkit-user-select:none;
+  }
+  /* ---------- top bar ---------- */
+  #topbar {
+    flex:0 0 auto;
+    display:flex; align-items:center; gap:8px;
+    padding:8px 12px;
+    background:rgba(16,16,34,.85);
+    border-bottom:1px solid rgba(255,255,255,.07);
+  }
+  #topbar a.back {
+    color:#9a9ac0; text-decoration:none; font-size:13px; font-weight:600;
+    padding:4px 8px; border-radius:8px; white-space:nowrap;
+  }
+  #topbar a.back:hover { color:#fff; background:rgba(255,255,255,.08); }
+  #topbar img { width:22px; height:22px; border-radius:6px; }
+  #topbar .title {
+    font-weight:900; font-size:15px; letter-spacing:.12em;
+    background:linear-gradient(100deg,#ff2dac,#ff6a00 55%,#ffcc00);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  #topbar .chip {
+    font-size:9px; font-weight:800; letter-spacing:.14em;
+    color:#0a0a14; background:linear-gradient(90deg,#ffcf5a,#ffe89a);
+    padding:3px 7px; border-radius:99px;
+  }
+  #topbar .spacer { flex:1; }
+  /* ---------- layout column ---------- */
+  #wrap {
+    flex:1 1 auto; min-height:0;
+    width:100%; max-width:440px; margin:0 auto;
+    display:flex; flex-direction:column;
+    padding:6px 10px 8px;
+  }
+  /* ---------- HUD ---------- */
+  #hud { flex:0 0 auto; padding:2px 2px 6px; }
+  #hudTop {
+    display:flex; align-items:baseline; justify-content:space-between;
+    font-size:11px; font-weight:800; letter-spacing:.1em; color:#8f8fbe;
+  }
+  #hudTop .theme { color:#7fd4ff; }
+  #hudTop .gold { color:#ffcf5a; font-size:13px; }
+  #hudMid {
+    display:flex; align-items:baseline; justify-content:space-between;
+    margin-top:2px;
+  }
+  #hudScore { font-size:22px; font-weight:900; color:#fff; font-variant-numeric:tabular-nums; }
+  #hudScore .tgt { font-size:13px; color:#8f8fbe; font-weight:700; }
+  #hudSwaps { font-size:13px; font-weight:800; color:#b8b8e0; font-variant-numeric:tabular-nums; }
+  #hudSwaps.low { color:#ff5a6e; }
+  #bar {
+    margin-top:5px; height:8px; border-radius:99px;
+    background:rgba(255,255,255,.09); overflow:hidden;
+  }
+  #barFill {
+    height:100%; width:0%; border-radius:99px;
+    background:linear-gradient(90deg,#ffcf5a,#ff6a00);
+    transition:width .35s cubic-bezier(.22,1.2,.36,1);
+  }
+  #barFill.done { background:linear-gradient(90deg,#12d96e,#7fffb0); }
+  /* ---------- stage ---------- */
+  #stage { flex:1 1 auto; min-height:0; position:relative; }
+  #cv { position:absolute; inset:0; width:100%; height:100%; touch-action:none; cursor:pointer; display:block; }
+  #hint {
+    position:absolute; left:50%; bottom:10px; transform:translateX(-50%);
+    background:rgba(10,10,26,.82); border:1px solid rgba(255,255,255,.14);
+    color:#dcdcff; font-size:12px; font-weight:600; white-space:nowrap;
+    padding:7px 14px; border-radius:99px; pointer-events:none;
+    transition:opacity .6s ease; backdrop-filter:blur(4px);
+  }
+  #hint.hide { opacity:0; }
+  /* ---------- ORBFALL meter ---------- */
+  #meterRow { flex:0 0 auto; padding-top:8px; }
+  #meter {
+    position:relative; height:36px; border-radius:12px; overflow:hidden;
+    background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.12);
+    cursor:pointer;
+  }
+  #meterFill {
+    position:absolute; inset:0; width:0%;
+    background:linear-gradient(90deg,#5a2dff,#a92dff 60%,#ff2dac);
+    transition:width .3s ease;
+  }
+  #meterLabel {
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    font-size:12px; font-weight:900; letter-spacing:.16em; color:#fff;
+    text-shadow:0 1px 3px rgba(0,0,0,.6);
+  }
+  #meter.ready { border-color:#ffcf5a; animation:pulse 0.8s ease-in-out infinite; }
+  #meter.ready #meterFill { background:linear-gradient(90deg,#ff6a00,#ffcf5a); }
+  #meter.ready #meterLabel { color:#1a0a00; text-shadow:none; }
+  @keyframes pulse {
+    0%,100% { box-shadow:0 0 0 0 rgba(255,207,90,.0); transform:scale(1); }
+    50%     { box-shadow:0 0 18px 2px rgba(255,207,90,.55); transform:scale(1.015); }
+  }
+  /* ---------- overlays ---------- */
+  .overlay {
+    position:fixed; inset:0; z-index:20;
+    display:none; align-items:center; justify-content:center;
+    background:rgba(6,6,16,.78); backdrop-filter:blur(6px);
+    padding:16px;
+  }
+  .overlay.show { display:flex; }
+  .panel {
+    width:100%; max-width:360px;
+    background:linear-gradient(160deg,#181832,#101024);
+    border:1px solid rgba(255,255,255,.13);
+    border-radius:20px; padding:20px 18px;
+    text-align:center;
+    box-shadow:0 18px 60px rgba(0,0,0,.6);
+    animation:panelIn .38s cubic-bezier(.22,1.4,.36,1);
+    max-height:92dvh; overflow-y:auto;
+  }
+  @keyframes panelIn { from { transform:scale(.86) translateY(18px); opacity:0; } to { transform:none; opacity:1; } }
+  .panel h2 { font-size:22px; font-weight:900; letter-spacing:.06em; color:#fff; }
+  .panel h2.gold { color:#ffcf5a; }
+  .panel h2.bad { color:#ff5a6e; }
+  .panel .sub { margin-top:4px; font-size:13px; color:#9a9ac0; font-weight:600; }
+  .panel .rewardline { margin-top:8px; font-size:14px; color:#ffcf5a; font-weight:800; }
+  .charms { margin-top:14px; display:flex; flex-direction:column; gap:8px; text-align:left; }
+  .charm {
+    display:flex; align-items:center; gap:10px;
+    background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1);
+    border-radius:14px; padding:10px 12px;
+  }
+  .charm .ic {
+    flex:0 0 38px; height:38px; border-radius:10px;
+    display:flex; align-items:center; justify-content:center; font-size:20px;
+    background:radial-gradient(circle at 35% 30%, #3a3a6e, #1c1c3c);
+    border:1px solid rgba(255,255,255,.12);
+  }
+  .charm .tx { flex:1; min-width:0; }
+  .charm .nm { font-size:13px; font-weight:800; color:#fff; }
+  .charm .ds { font-size:11px; color:#9a9ac0; line-height:1.35; }
+  .charm button {
+    flex:0 0 auto; border:0; border-radius:10px; padding:8px 12px;
+    font-size:12px; font-weight:900; cursor:pointer;
+    background:linear-gradient(90deg,#ffcf5a,#ffb340); color:#1a0f00;
+  }
+  .charm button:disabled { background:rgba(255,255,255,.12); color:#77779a; cursor:default; }
+  .charm.owned { border-color:rgba(18,217,110,.5); }
+  .charm.owned .nm::after { content:" ✓"; color:#12d96e; }
+  .bigbtn {
+    margin-top:16px; width:100%; border:0; border-radius:14px; padding:13px;
+    font-size:15px; font-weight:900; letter-spacing:.06em; cursor:pointer;
+    background:linear-gradient(90deg,#ff2dac,#ff6a00); color:#fff;
+    box-shadow:0 6px 22px rgba(255,45,172,.35);
+  }
+  .bigbtn:active { transform:scale(.97); }
+  .stats { margin-top:12px; display:flex; justify-content:center; gap:22px; }
+  .stats .st { text-align:center; }
+  .stats .v { font-size:19px; font-weight:900; color:#fff; font-variant-numeric:tabular-nums; }
+  .stats .k { font-size:10px; font-weight:700; letter-spacing:.12em; color:#8f8fbe; }
+  .soon { margin-top:14px; font-size:12px; color:#9a9ac0; font-weight:700; letter-spacing:.04em; }
+  .more { display:inline-block; margin-top:6px; font-size:13px; color:#7fd4ff; font-weight:700; text-decoration:none; }
+  .more:hover { text-decoration:underline; }
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <a class="back" href="/games/orbcrash.html">&#8592; Back</a>
+  <span class="spacer"></span>
+  <img src="/assets/games/orbcrash/icon.png" alt="">
+  <span class="title">ORBCRASH</span>
+  <span class="chip">SNEAK PEEK</span>
+  <span class="spacer"></span>
+  <span style="width:52px"></span>
+</div>
+
+<div id="wrap">
+  <div id="hud">
+    <div id="hudTop">
+      <span class="theme" id="hudTheme">SURGE 1 &middot; CLASSIC</span>
+      <span id="hudRound">ROUND 1/3</span>
+      <span class="gold" id="hudGold">$2</span>
+    </div>
+    <div id="hudMid">
+      <span id="hudScore">0 <span class="tgt">/ 240</span></span>
+      <span id="hudSwaps">SWAPS 6</span>
+    </div>
+    <div id="bar"><div id="barFill"></div></div>
+  </div>
+
+  <div id="stage">
+    <canvas id="cv"></canvas>
+    <div id="hint">Swipe orbs to swap &middot; same colours merge &middot; 5&#9733; BURSTS</div>
+  </div>
+
+  <div id="meterRow">
+    <div id="meter">
+      <div id="meterFill"></div>
+      <div id="meterLabel">COMBO 0%</div>
+    </div>
+  </div>
+</div>
+
+<!-- between-round shop -->
+<div class="overlay" id="shopOverlay">
+  <div class="panel">
+    <h2 class="gold" id="shopTitle">ROUND CLEARED!</h2>
+    <div class="rewardline" id="shopReward">+$6</div>
+    <div class="sub" style="margin-top:12px; letter-spacing:.14em; font-weight:800;">THE SHOP &mdash; CHARMS</div>
+    <div class="sub" style="font-size:11px;">Charms are permanent upgrades for the run.</div>
+    <div class="charms" id="charmList"></div>
+    <button class="bigbtn" id="continueBtn">CONTINUE &mdash; ROUND 2</button>
+    <div class="sub" id="nextTarget" style="margin-top:8px;"></div>
+  </div>
+</div>
+
+<!-- end of slice -->
+<div class="overlay" id="endOverlay">
+  <div class="panel">
+    <h2 id="endTitle">SURGE 1 CLEARED!</h2>
+    <div class="sub" id="endSub"></div>
+    <div class="stats">
+      <div class="st"><div class="v" id="stScore">0</div><div class="k">TOTAL SCORE</div></div>
+      <div class="st"><div class="v" id="stBurst">0</div><div class="k">BEST BURST</div></div>
+      <div class="st"><div class="v" id="stCasc">0</div><div class="k">BEST CASCADE</div></div>
+    </div>
+    <button class="bigbtn" onclick="location.reload()">PLAY AGAIN</button>
+    <div class="soon">Coming soon to the App&nbsp;Store</div>
+    <a class="more" href="/games/orbcrash.html">More about Orbcrash &rarr;</a>
+  </div>
+</div>
+
+<script>
+'use strict';
+/* =========================================================================
+   ORBCRASH — sneak peek slice: Surge 1 (Classic), 3 rounds + Charm shop.
+   Faithful to the real rules: 7x8 board, swap adjacent orbs, same-colour
+   groups merge (stars sum), 5★+ orbs BURST for stars³ x2 x cascade mult,
+   cascades chain, bursts charge the ORBFALL meter.
+   ========================================================================= */
+
+// ---------- constants (from the real game) ----------
+const COLS = 7, ROWS = 8, NCOL = 5;          // 5 colours active at Surge 1
+const BURST_AT = 5, BURST_COEF = 2;
+const COLORS = ['#ff1f44', '#ffcc00', '#12d96e', '#1f8cff', '#a92dff'];
+// per-colour silhouettes (colour-blind aid): [sides, phase]; 0 = circle
+const SHAPES = [[5, -1.5708], [0, 0], [3, -1.5708], [4, -0.7854], [6, 0]];
+const SHAPE_K = 0.10;
+const TARGETS = [240, 480, 900];             // real curve: 240 / 482 / 970
+const BASE_SWAPS = 6;                        // real game gives 5; demo is kind
+const CHARMS = [
+  { id: 'swaps2',   name: 'Steady Hands', ic: '&#9995;', desc: '+1 swap each round',          cost: 4 },
+  { id: 'chain',    name: 'Cascade Lord', ic: '&#9889;', desc: '+1 mult per cascade step',    cost: 6 },
+  { id: 'bigburst', name: 'Big Bang',     ic: '&#128165;', desc: 'all bursts score +50%',     cost: 7 },
+];
+
+// ---------- state ----------
+let board = [];                 // ROWS x COLS of orb|null
+let state = 'play';             // play | resolve | orbfall | shop | over
+let round = 1;
+let score = 0, totalScore = 0, target = TARGETS[0];
+let swaps = BASE_SWAPS;
+let gold = 2;
+const owned = {};
+let cascade = 0;
+let combo = 0;                  // 0..1 ORBFALL meter
+let naturalRefill = false;      // refills after a burst can chain
+let ultMode = false;            // ORBFALL's own cascade doesn't refill the meter
+let resolveTimer = 0;
+let ultT = -1, ultColor = 0, ultImpacted = false;
+let bestBurst = 0, bestCascade = 0;
+let resolveDidWork = false;     // did this resolve merge or burst anything?
+let lastSwap = null;            // where the last player swap happened (for feedback)
+let shake = 0, whiteFlash = 0;
+let flashMsg = null;            // {txt, age, dur}
+let selected = null;            // {r, c} tap-to-select / keyboard cursor
+let hintDone = false;
+
+// fx pools
+const parts = [];               // particles
+const absorbs = [];             // orbs flying into a merge keeper
+const popups = [];              // floating score text
+
+// ---------- canvas / layout ----------
+const cv = document.getElementById('cv');
+const ctx = cv.getContext('2d');
+let W = 0, H = 0, cell = 40, bx = 0, by = 0, dpr = 1;
+
+function resize() {
+  const st = document.getElementById('stage').getBoundingClientRect();
+  W = Math.max(200, st.width);
+  H = Math.max(200, st.height);
+  dpr = Math.min(2, window.devicePixelRatio || 1);
+  cv.width = Math.round(W * dpr);
+  cv.height = Math.round(H * dpr);
+  cell = Math.floor(Math.min((W - 14) / COLS, (H - 10) / ROWS));
+  bx = (W - cell * COLS) / 2;
+  by = (H - cell * ROWS) / 2;
+}
+window.addEventListener('resize', resize);
+if (window.ResizeObserver) new ResizeObserver(resize).observe(document.getElementById('stage'));
+
+function ccx(c) { return bx + (c + 0.5) * cell; }
+function ccy(r) { return by + (r + 0.5) * cell; }
+
+// ---------- helpers ----------
+function fmt(n) {
+  if (n >= 100000) return (n / 1000000 >= 1 ? (n / 1000000).toFixed(1) + 'M' : Math.round(n / 1000) + 'K');
+  return n.toLocaleString('en-US');
+}
+function hexToRgb(h) {
+  return [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)];
+}
+function mix(hex, white, t) {
+  const a = hexToRgb(hex);
+  const b = white ? [255, 255, 255] : [8, 8, 24];
+  const m = a.map((v, i) => Math.round(v + (b[i] - v) * t));
+  return 'rgb(' + m[0] + ',' + m[1] + ',' + m[2] + ')';
+}
+function rnd(a, b) { return a + Math.random() * (b - a); }
+
+// ---------- board setup ----------
+function mkOrb(color, size, px, py) {
+  return { c: color, s: size, px, py, vy: 0, vs: 1, sq: 1, fall: false };
+}
+function neighborColors(r, c) {
+  const out = [];
+  [[1, 0], [-1, 0], [0, 1], [0, -1]].forEach(d => {
+    const rr = r + d[0], cc2 = c + d[1];
+    if (rr >= 0 && rr < ROWS && cc2 >= 0 && cc2 < COLS && board[rr] && board[rr][cc2]) out.push(board[rr][cc2].c);
+  });
+  return out;
+}
+function safeColor(r, c) {
+  for (let i = 0; i < 14; i++) {
+    const col = (Math.random() * NCOL) | 0;
+    if (!neighborColors(r, c).includes(col)) return col;
+  }
+  return (Math.random() * NCOL) | 0;
+}
+function newBoard() {
+  board = [];
+  for (let r = 0; r < ROWS; r++) {
+    const row = [];
+    for (let c = 0; c < COLS; c++) row.push(null);
+    board.push(row);
+  }
+  for (let r = 0; r < ROWS; r++)
+    for (let c = 0; c < COLS; c++)
+      board[r][c] = mkOrb(safeColor(r, c), 1, ccx(c), ccy(r) - rnd(H * 0.5, H * 0.9));
+  // drop in with gravity for a juicy opener
+  for (let r = 0; r < ROWS; r++)
+    for (let c = 0; c < COLS; c++) board[r][c].fall = true;
+}
+
+// ---------- HUD ----------
+const $ = id => document.getElementById(id);
+function refreshHUD() {
+  $('hudRound').textContent = 'ROUND ' + round + '/3';
+  $('hudGold').textContent = '$' + gold;
+  $('hudScore').innerHTML = fmt(score) + ' <span class="tgt">/ ' + fmt(target) + '</span>';
+  const sw = $('hudSwaps');
+  sw.textContent = 'SWAPS ' + Math.max(0, swaps);
+  sw.className = swaps <= 1 ? 'low' : '';
+  const pct = Math.min(100, score / target * 100);
+  const bf = $('barFill');
+  bf.style.width = pct + '%';
+  bf.className = pct >= 100 ? 'done' : '';
+  const m = $('meter'), mf = $('meterFill'), ml = $('meterLabel');
+  mf.style.width = Math.round(combo * 100) + '%';
+  if (combo >= 1) { m.classList.add('ready'); ml.textContent = 'ORBFALL READY — TAP!'; }
+  else { m.classList.remove('ready'); ml.textContent = 'COMBO ' + Math.round(combo * 100) + '%'; }
+}
+
+// ---------- fx ----------
+function addShake(a) { shake = Math.min(30, shake + a); }
+function burstFx(x, y, col, s) {
+  const n = 10 + s * 2;
+  for (let i = 0; i < n; i++) {
+    const a = Math.random() * 6.2832, sp = rnd(60, 190 + s * 22);
+    parts.push({
+      x, y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp - 60,
+      age: 0, dur: rnd(0.35, 0.75), col, r: rnd(2, 4.5 + s * 0.4)
+    });
+  }
+}
+function popup(x, y, txt, col, big) {
+  popups.push({ x, y, txt, col: col || '#fff', age: 0, dur: 0.9, big: !!big });
+}
+function flash(txt) { flashMsg = { txt, age: 0, dur: 1.0 }; }
+
+// ---------- core rules ----------
+function doMerges() {
+  const seen = board.map(row => row.map(() => false));
+  let any = false;
+  for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) {
+    if (!board[r][c] || seen[r][c]) continue;
+    const col = board[r][c].c;
+    const group = [];
+    const st = [[r, c]];
+    seen[r][c] = true;
+    while (st.length) {
+      const p = st.pop();
+      group.push(p);
+      [[1, 0], [-1, 0], [0, 1], [0, -1]].forEach(d => {
+        const rr = p[0] + d[0], cc2 = p[1] + d[1];
+        if (rr >= 0 && rr < ROWS && cc2 >= 0 && cc2 < COLS && !seen[rr][cc2] &&
+            board[rr][cc2] && board[rr][cc2].c === col) {
+          seen[rr][cc2] = true;
+          st.push([rr, cc2]);
+        }
+      });
+    }
+    if (group.length > 1) {
+      any = true;
+      resolveDidWork = true;
+      // merge into the lowest, then left-most cell (real rule)
+      let keep = group[0];
+      let total = 0;
+      group.forEach(p => {
+        total += board[p[0]][p[1]].s;
+        if (p[0] > keep[0] || (p[0] === keep[0] && p[1] < keep[1])) keep = p;
+      });
+      const kx = ccx(keep[1]), ky = ccy(keep[0]);
+      group.forEach(p => {
+        if (p[0] === keep[0] && p[1] === keep[1]) return;
+        const o = board[p[0]][p[1]];
+        absorbs.push({ x: o.px, y: o.py, tx: kx, ty: ky, col: COLORS[col], r: cell * 0.32, age: 0, dur: 0.22 });
+        board[p[0]][p[1]] = null;
+      });
+      const k = board[keep[0]][keep[1]];
+      k.s = total;
+      k.vs = 1.5;          // pop as it absorbs
+      addShake(1.5);
+    }
+  }
+  return any;
+}
+
+function doBursts() {
+  const hits = [];
+  for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) {
+    const o = board[r][c];
+    if (o && o.s >= BURST_AT) hits.push([r, c, o]);
+  }
+  if (!hits.length) return false;
+  resolveDidWork = true;
+  cascade++;
+  bestCascade = Math.max(bestCascade, cascade);
+  hits.forEach(h => {
+    const o = h[2];
+    let mult = cascade;
+    if (owned.chain) mult += cascade - 1;              // Cascade Lord
+    const exp = o.s <= 7 ? 3 : 4;                      // big orbs score on a higher power
+    let gain = Math.pow(o.s, exp) * BURST_COEF * mult;
+    if (owned.bigburst) gain *= 1.5;                   // Big Bang
+    gain = Math.round(gain);
+    score += gain;
+    bestBurst = Math.max(bestBurst, gain);
+    if (!ultMode) combo = Math.min(1, combo + o.s * o.s / 120);   // charge ORBFALL
+    burstFx(o.px, o.py, COLORS[o.c], Math.min(o.s, 12));
+    popup(o.px, o.py - cell * 0.3, '+' + fmt(gain), '#ffcf5a', gain >= 900);
+    addShake(4 + Math.min(o.s, 10));
+    if (o.s >= 10) whiteFlash = Math.max(whiteFlash, 0.5);
+    board[h[0]][h[1]] = null;
+  });
+  if (cascade >= 2) flash('CASCADE x' + cascade + '!');
+  naturalRefill = true;
+  refreshHUD();
+  return true;
+}
+
+function gravityRefill() {
+  let changed = false;
+  for (let c = 0; c < COLS; c++) {
+    let write = ROWS - 1;
+    for (let r = ROWS - 1; r >= 0; r--) {
+      if (board[r][c]) {
+        if (write !== r) {
+          board[write][c] = board[r][c];
+          board[r][c] = null;
+          board[write][c].fall = true;
+          changed = true;
+        }
+        write--;
+      }
+    }
+    // refill above; blast refills roll natural colours so cascades can chain
+    let stack = 0;
+    for (let r = write; r >= 0; r--) {
+      stack++;
+      const col = naturalRefill ? ((Math.random() * NCOL) | 0) : safeColor(r, c);
+      const o = mkOrb(col, 1, ccx(c), by - cell * (stack - 0.3));
+      o.fall = true;
+      board[r][c] = o;
+      changed = true;
+    }
+  }
+  return changed;
+}
+
+function resolveStep() {
+  if (doMerges())      { resolveTimer = 300; return; }
+  if (doBursts())      { resolveTimer = 330; return; }
+  if (gravityRefill()) { resolveTimer = 400; return; }
+  endResolve();
+}
+
+function endResolve() {
+  naturalRefill = false;
+  ultMode = false;
+  if (!resolveDidWork && lastSwap) {
+    popup(ccx(lastSwap.c), ccy(lastSwap.r) - cell * 0.2, 'no merge', '#9a9ac0');
+  }
+  lastSwap = null;
+  refreshHUD();
+  if (score >= target)  { roundWin(); return; }
+  if (swaps <= 0)       { endGame(false); return; }
+  state = 'play';
+}
+
+// ---------- swap input ----------
+function trySwap(a, b) {
+  if (state !== 'play') return;
+  if (b.r < 0 || b.r >= ROWS || b.c < 0 || b.c >= COLS) return;
+  if (Math.abs(a.r - b.r) + Math.abs(a.c - b.c) !== 1) return;
+  if (!board[a.r][a.c] || !board[b.r][b.c]) return;
+  selected = null;
+  swaps--;
+  const tmp = board[a.r][a.c];
+  board[a.r][a.c] = board[b.r][b.c];
+  board[b.r][b.c] = tmp;
+  board[a.r][a.c].vs = 1.18;
+  board[b.r][b.c].vs = 1.18;
+  cascade = 0;
+  resolveDidWork = false;
+  lastSwap = { r: b.r, c: b.c };
+  state = 'resolve';
+  resolveTimer = 190;   // let the swap slide finish first
+  refreshHUD();
+}
+
+function cellAt(x, y) {
+  const c = Math.floor((x - bx) / cell), r = Math.floor((y - by) / cell);
+  if (r < 0 || r >= ROWS || c < 0 || c >= COLS) return null;
+  return { r, c };
+}
+function dismissHint() {
+  if (!hintDone) { hintDone = true; $('hint').classList.add('hide'); }
+}
+
+let drag = null;  // {x, y, cell}
+cv.addEventListener('pointerdown', e => {
+  e.preventDefault();
+  dismissHint();
+  const rect = cv.getBoundingClientRect();
+  const x = e.clientX - rect.left, y = e.clientY - rect.top;
+  const cl = cellAt(x, y);
+  if (!cl || state !== 'play') { drag = null; return; }
+  drag = { x, y, cell: cl };
+  cv.setPointerCapture(e.pointerId);
+});
+cv.addEventListener('pointermove', e => {
+  if (!drag || state !== 'play') return;
+  const rect = cv.getBoundingClientRect();
+  const dx = (e.clientX - rect.left) - drag.x, dy = (e.clientY - rect.top) - drag.y;
+  if (Math.hypot(dx, dy) < cell * 0.35) return;
+  const a = drag.cell;
+  const dir = Math.abs(dx) > Math.abs(dy)
+    ? { r: 0, c: dx > 0 ? 1 : -1 }
+    : { r: dy > 0 ? 1 : -1, c: 0 };
+  drag = null;
+  trySwap(a, { r: a.r + dir.r, c: a.c + dir.c });
+});
+cv.addEventListener('pointerup', e => {
+  if (!drag) return;
+  const a = drag.cell;
+  drag = null;
+  if (state !== 'play') return;
+  // tap-select then tap an adjacent orb (mouse-friendly alternative to swiping)
+  if (selected && Math.abs(selected.r - a.r) + Math.abs(selected.c - a.c) === 1) {
+    trySwap(selected, a);
+  } else if (selected && selected.r === a.r && selected.c === a.c) {
+    selected = null;
+  } else {
+    selected = a;
+  }
+});
+cv.addEventListener('touchstart', e => e.preventDefault(), { passive: false });
+cv.addEventListener('touchmove', e => e.preventDefault(), { passive: false });
+
+// keyboard: arrows swap the selected orb; space fires ORBFALL
+window.addEventListener('keydown', e => {
+  const dirs = { ArrowUp: [-1, 0], ArrowDown: [1, 0], ArrowLeft: [0, -1], ArrowRight: [0, 1] };
+  if (dirs[e.key]) {
+    e.preventDefault();
+    dismissHint();
+    if (state !== 'play') return;
+    if (!selected) { selected = { r: 4, c: 3 }; return; }
+    const d = dirs[e.key];
+    trySwap(selected, { r: selected.r + d[0], c: selected.c + d[1] });
+  } else if (e.key === ' ' || e.key === 'Enter') {
+    e.preventDefault();
+    fireOrbfall();
+  }
+});
+
+// ---------- ORBFALL ----------
+function fireOrbfall() {
+  if (state !== 'play' || combo < 1) return;
+  dismissHint();
+  combo = 0;
+  state = 'orbfall';
+  ultT = 0;
+  ultImpacted = false;
+  ultColor = (Math.random() * NCOL) | 0;
+  flash('ORBFALL!');
+  addShake(8);
+  refreshHUD();
+}
+$('meter').addEventListener('click', fireOrbfall);
+
+function tickOrbfall(dt) {
+  ultT += dt;
+  if (!ultImpacted && ultT >= 0.55) {
+    ultImpacted = true;
+    for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) {
+      const o = board[r][c];
+      if (o) { o.c = ultColor; o.vs = 1.6; }
+    }
+    addShake(26);
+    whiteFlash = 0.7;
+    burstFx(bx + cell * COLS / 2, by + cell * ROWS / 2, COLORS[ultColor], 14);
+  }
+  if (ultT >= 1.05) {
+    ultT = -1;
+    ultMode = true;      // this cascade must NOT refill the meter
+    cascade = 0;
+    state = 'resolve';
+    resolveTimer = 120;
+  }
+}
+
+// ---------- round / shop / end ----------
+function roundWin() {
+  totalScore += score;
+  const reward = 4 + Math.max(0, swaps);   // depth + leftover swaps pay out
+  gold += reward;
+  if (round >= 3) { endGame(true); return; }
+  state = 'shop';
+  $('shopTitle').textContent = 'ROUND ' + round + ' CLEARED!';
+  $('shopReward').textContent = '+$' + reward + ' earned';
+  $('continueBtn').textContent = 'CONTINUE — ROUND ' + (round + 1);
+  $('nextTarget').textContent = 'Next target: ' + fmt(TARGETS[round]) + ' points';
+  buildShop();
+  $('shopOverlay').classList.add('show');
+  refreshHUD();
+}
+
+function buildShop() {
+  const list = $('charmList');
+  list.innerHTML = '';
+  CHARMS.forEach(ch => {
+    const div = document.createElement('div');
+    div.className = 'charm' + (owned[ch.id] ? ' owned' : '');
+    div.innerHTML =
+      '<div class="ic">' + ch.ic + '</div>' +
+      '<div class="tx"><div class="nm">' + ch.name + '</div><div class="ds">' + ch.desc + '</div></div>';
+    const btn = document.createElement('button');
+    if (owned[ch.id]) {
+      btn.textContent = 'OWNED';
+      btn.disabled = true;
+    } else {
+      btn.textContent = '$' + ch.cost;
+      btn.disabled = gold < ch.cost;
+      btn.addEventListener('click', () => {
+        if (gold < ch.cost || owned[ch.id]) return;
+        gold -= ch.cost;
+        owned[ch.id] = true;
+        refreshHUD();
+        buildShop();
+      });
+    }
+    div.appendChild(btn);
+    list.appendChild(div);
+  });
+}
+
+$('continueBtn').addEventListener('click', () => {
+  $('shopOverlay').classList.remove('show');
+  round++;
+  target = TARGETS[round - 1];
+  score = 0;
+  swaps = BASE_SWAPS + (owned.swaps2 ? 1 : 0);
+  cascade = 0;
+  selected = null;
+  newBoard();
+  state = 'play';
+  flash('ROUND ' + round + '!');
+  refreshHUD();
+});
+
+function endGame(win) {
+  state = 'over';
+  if (!win) totalScore += score;
+  $('endTitle').textContent = win ? 'SURGE 1 CLEARED!' : 'RUN OVER';
+  $('endTitle').className = win ? 'gold' : 'bad';
+  $('endSub').textContent = win
+    ? 'And that’s just the first of 12 surges. Charms, items and wilder themes await.'
+    : 'Out of swaps on Round ' + round + '. The full game’s Charms would’ve saved you…';
+  $('stScore').textContent = fmt(totalScore);
+  $('stBurst').textContent = fmt(bestBurst);
+  $('stCasc').textContent = 'x' + bestCascade;
+  setTimeout(() => $('endOverlay').classList.add('show'), win ? 650 : 450);
+}
+
+// ---------- drawing ----------
+function blobPath(x, y, r, sides, phase) {
+  ctx.beginPath();
+  if (sides === 0) { ctx.arc(x, y, r, 0, 6.2832); return; }
+  const N = 26;
+  for (let i = 0; i <= N; i++) {
+    const th = i / N * 6.2832;
+    const rr = r * (1 + SHAPE_K * Math.cos(sides * (th - phase)));
+    const px = x + Math.cos(th) * rr, py = y + Math.sin(th) * rr;
+    if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+  }
+  ctx.closePath();
+}
+
+function drawOrb(o, x, y) {
+  const base = cell * 0.36 * Math.min(1.28, 1 + 0.05 * (o.s - 1));
+  const r = base * o.vs;
+  const col = COLORS[o.c];
+  const sh = SHAPES[o.c];
+  // near-burst telegraph: gold pulse at 4★
+  if (o.s === BURST_AT - 1) {
+    ctx.save();
+    ctx.globalAlpha = 0.35 + 0.25 * Math.sin(performance.now() / 180);
+    ctx.shadowColor = '#ffcf5a';
+    ctx.shadowBlur = 14;
+    blobPath(x, y, r * 1.06, sh[0], sh[1]);
+    ctx.fillStyle = '#ffcf5a';
+    ctx.fill();
+    ctx.restore();
+  } else if (o.s >= BURST_AT) {
+    ctx.save();
+    ctx.shadowColor = col;
+    ctx.shadowBlur = 18;
+    blobPath(x, y, r * 1.05, sh[0], sh[1]);
+    ctx.fillStyle = col;
+    ctx.fill();
+    ctx.restore();
+  }
+  // jelly body
+  const g = ctx.createRadialGradient(x - r * 0.32, y - r * 0.38, r * 0.1, x, y, r * 1.15);
+  g.addColorStop(0, mix(col, true, 0.55));
+  g.addColorStop(0.55, col);
+  g.addColorStop(1, mix(col, false, 0.35));
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(1 / Math.sqrt(o.sq), o.sq);   // landing squash, volume-ish preserved
+  ctx.translate(-x, -y);
+  blobPath(x, y, r, sh[0], sh[1]);
+  ctx.fillStyle = g;
+  ctx.fill();
+  ctx.lineWidth = Math.max(1, r * 0.07);
+  ctx.strokeStyle = 'rgba(255,255,255,0.22)';
+  ctx.stroke();
+  // gloss highlight
+  ctx.beginPath();
+  ctx.ellipse(x - r * 0.3, y - r * 0.42, r * 0.34, r * 0.2, -0.5, 0, 6.2832);
+  ctx.fillStyle = 'rgba(255,255,255,0.4)';
+  ctx.fill();
+  ctx.restore();
+  // star count
+  if (o.s >= 2) {
+    const fs = Math.max(10, r * 0.62);
+    ctx.font = '900 ' + fs + 'px -apple-system, "Segoe UI", sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.lineWidth = fs * 0.22;
+    ctx.strokeStyle = 'rgba(10,10,25,0.65)';
+    const label = o.s >= 100 ? '99+' : String(o.s);
+    ctx.strokeText(label, x, y + r * 0.05);
+    ctx.fillStyle = '#fff';
+    ctx.fillText(label, x, y + r * 0.05);
+  }
+}
+
+function draw() {
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  // bg
+  const bg = ctx.createLinearGradient(0, 0, 0, H);
+  bg.addColorStop(0, '#0e0e22');
+  bg.addColorStop(1, '#0a0a14');
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, W, H);
+  // shake
+  if (shake > 0.2) ctx.translate(rnd(-shake, shake) * 0.5, rnd(-shake, shake) * 0.5);
+  // board panel
+  const pw = cell * COLS, ph = cell * ROWS;
+  ctx.beginPath();
+  if (ctx.roundRect) ctx.roundRect(bx - 6, by - 6, pw + 12, ph + 12, 16); else ctx.rect(bx - 6, by - 6, pw + 12, ph + 12);
+  ctx.fillStyle = 'rgba(24,24,54,0.85)';
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(255,255,255,0.09)';
+  ctx.lineWidth = 1;
+  ctx.stroke();
+  // cell dots
+  ctx.fillStyle = 'rgba(255,255,255,0.05)';
+  for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) {
+    ctx.beginPath();
+    ctx.arc(ccx(c), ccy(r), 2, 0, 6.2832);
+    ctx.fill();
+  }
+  // selection ring
+  if (selected && state === 'play') {
+    ctx.beginPath();
+    ctx.arc(ccx(selected.c), ccy(selected.r), cell * 0.46, 0, 6.2832);
+    ctx.strokeStyle = '#ffcf5a';
+    ctx.lineWidth = 3;
+    ctx.stroke();
+  }
+  // absorbs (behind orbs)
+  absorbs.forEach(a => {
+    const t = Math.min(1, a.age / a.dur);
+    const e = 1 - Math.pow(1 - t, 3);
+    const x = a.x + (a.tx - a.x) * e, y = a.y + (a.ty - a.y) * e;
+    ctx.globalAlpha = 1 - t * 0.5;
+    ctx.beginPath();
+    ctx.arc(x, y, a.r * (1 - t * 0.6), 0, 6.2832);
+    ctx.fillStyle = a.col;
+    ctx.fill();
+    ctx.globalAlpha = 1;
+  });
+  // clip orbs to the panel so drops enter cleanly
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(bx - 6, by - 6, pw + 12, ph + 12);
+  ctx.clip();
+  for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) {
+    const o = board[r][c];
+    if (o) drawOrb(o, o.px, o.py);
+  }
+  ctx.restore();
+  // particles (additive)
+  ctx.save();
+  ctx.globalCompositeOperation = 'lighter';
+  parts.forEach(p => {
+    const t = p.age / p.dur;
+    ctx.globalAlpha = Math.max(0, 1 - t);
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r * (1 - t * 0.7), 0, 6.2832);
+    ctx.fillStyle = p.col;
+    ctx.fill();
+  });
+  ctx.restore();
+  // ORBFALL giant orb
+  if (state === 'orbfall' && ultT >= 0 && ultT < 0.62) {
+    const t = Math.min(1, ultT / 0.55);
+    const gy = -cell * 2 + (by + ph * 0.5 + cell * 2) * (t * t);
+    const gx = bx + pw / 2;
+    const gr = cell * 1.7;
+    ctx.save();
+    ctx.shadowColor = COLORS[ultColor];
+    ctx.shadowBlur = 34;
+    const gg = ctx.createRadialGradient(gx - gr * 0.3, gy - gr * 0.35, gr * 0.1, gx, gy, gr * 1.1);
+    gg.addColorStop(0, mix(COLORS[ultColor], true, 0.6));
+    gg.addColorStop(0.6, COLORS[ultColor]);
+    gg.addColorStop(1, mix(COLORS[ultColor], false, 0.3));
+    ctx.beginPath();
+    ctx.arc(gx, gy, gr, 0, 6.2832);
+    ctx.fillStyle = gg;
+    ctx.fill();
+    ctx.restore();
+  }
+  // popups
+  popups.forEach(p => {
+    const t = p.age / p.dur;
+    const fs = (p.big ? 26 : 17) * (1 + 0.3 * Math.sin(Math.min(1, t * 3) * Math.PI));
+    ctx.globalAlpha = Math.max(0, 1 - t * t);
+    ctx.font = '900 ' + fs + 'px -apple-system, "Segoe UI", sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    const y = p.y - t * 34;
+    ctx.lineWidth = 4;
+    ctx.strokeStyle = 'rgba(10,10,25,0.7)';
+    ctx.strokeText(p.txt, p.x, y);
+    ctx.fillStyle = p.col;
+    ctx.fillText(p.txt, p.x, y);
+    ctx.globalAlpha = 1;
+  });
+  // centre flash message
+  if (flashMsg) {
+    const t = flashMsg.age / flashMsg.dur;
+    const pop = t < 0.25 ? (t / 0.25) : 1;
+    const sc = 0.6 + 0.4 * (1 - Math.pow(1 - pop, 3)) + (t < 0.25 ? 0.15 * Math.sin(pop * Math.PI) : 0);
+    ctx.save();
+    ctx.globalAlpha = t > 0.7 ? Math.max(0, 1 - (t - 0.7) / 0.3) : 1;
+    ctx.translate(W / 2, by + ph * 0.32);
+    ctx.scale(sc, sc);
+    ctx.font = '900 34px -apple-system, "Segoe UI", sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.lineWidth = 8;
+    ctx.strokeStyle = 'rgba(10,10,25,0.75)';
+    ctx.strokeText(flashMsg.txt, 0, 0);
+    ctx.fillStyle = '#ffcf5a';
+    ctx.fillText(flashMsg.txt, 0, 0);
+    ctx.restore();
+  }
+  // white flash
+  if (whiteFlash > 0.01) {
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.globalAlpha = whiteFlash;
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(0, 0, W, H);
+    ctx.globalAlpha = 1;
+  }
+}
+
+// ---------- update / loop ----------
+function update(dt) {
+  // orb motion
+  for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) {
+    const o = board[r][c];
+    if (!o) continue;
+    const tx = ccx(c), ty = ccy(r);
+    if (o.fall) {
+      o.vy += cell * 42 * dt;
+      o.py += o.vy * dt;
+      o.px += (tx - o.px) * Math.min(1, dt * 16);
+      if (o.py >= ty) {
+        o.py = ty;
+        o.vy = 0;
+        o.fall = false;
+        o.sq = 0.72;      // landing squash
+      }
+    } else {
+      o.px += (tx - o.px) * Math.min(1, dt * 15);
+      o.py += (ty - o.py) * Math.min(1, dt * 15);
+    }
+    o.vs += (1 - o.vs) * Math.min(1, dt * 7);
+    o.sq += (1 - o.sq) * Math.min(1, dt * 9);
+  }
+  // resolve stepper
+  if (state === 'resolve') {
+    resolveTimer -= dt * 1000;
+    if (resolveTimer <= 0) resolveStep();
+  } else if (state === 'orbfall') {
+    tickOrbfall(dt);
+  }
+  // fx
+  for (let i = parts.length - 1; i >= 0; i--) {
+    const p = parts[i];
+    p.age += dt;
+    if (p.age >= p.dur) { parts.splice(i, 1); continue; }
+    p.vy += 560 * dt;
+    p.x += p.vx * dt;
+    p.y += p.vy * dt;
+  }
+  for (let i = absorbs.length - 1; i >= 0; i--) {
+    absorbs[i].age += dt;
+    if (absorbs[i].age >= absorbs[i].dur) absorbs.splice(i, 1);
+  }
+  for (let i = popups.length - 1; i >= 0; i--) {
+    popups[i].age += dt;
+    if (popups[i].age >= popups[i].dur) popups.splice(i, 1);
+  }
+  if (flashMsg) {
+    flashMsg.age += dt;
+    if (flashMsg.age >= flashMsg.dur) flashMsg = null;
+  }
+  shake = Math.max(0, shake - dt * 42);
+  whiteFlash = Math.max(0, whiteFlash - dt * 1.6);
+}
+
+let lastT = 0;
+function loop(t) {
+  const dt = Math.min(0.05, (t - lastT) / 1000 || 0.016);
+  lastT = t;
+  update(dt);
+  draw();
+  requestAnimationFrame(loop);
+}
+
+// ---------- go ----------
+resize();
+newBoard();
+refreshHUD();
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>

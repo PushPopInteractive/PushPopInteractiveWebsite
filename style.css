@@ -138,6 +138,7 @@ section { padding: 64px 0; }
 }
 
 .card {
+  position: relative;
   display: flex; flex-direction: column;
   background: linear-gradient(180deg, #191930, #111120);
   border: 1px solid var(--line);
@@ -153,6 +154,25 @@ section { padding: 64px 0; }
 }
 
 .media-wrap { position: relative; }
+
+/* stretched link covering the card; try-btn floats above it */
+.card-hit { position: absolute; inset: 0; z-index: 1; border-radius: var(--radius); }
+.try-btn {
+  position: relative; z-index: 2;
+  display: inline-flex; align-items: center;
+  align-self: flex-start; margin-top: 8px;
+  font-family: var(--font-display); font-weight: 800; font-size: 14.5px;
+  color: #1a0c06; background: var(--grad);
+  padding: 8px 17px; border-radius: 999px;
+  box-shadow: 0 6px 20px #ff5a3c40, inset 0 1px 0 #ffffff70;
+  transition: transform .15s, box-shadow .15s, filter .15s;
+}
+.try-btn:hover {
+  transform: translateY(-1px) scale(1.05);
+  box-shadow: 0 10px 28px #ff5a3c66, inset 0 1px 0 #ffffff70;
+  filter: saturate(1.1);
+}
+.try-row { margin: 18px 0 4px; }
 
 .media {
   position: relative; aspect-ratio: 16 / 9.4; overflow: hidden;

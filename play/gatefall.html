@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>GateFall — Sneak Peek | PushPop Interactive</title>
+<link rel="icon" href="/assets/games/gatefall/icon.png">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html, body { height:100%; overflow:hidden; }
+  body {
+    background:#0a0a14; color:#ece8ff;
+    font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    display:flex; justify-content:center;
+    overscroll-behavior:none;
+  }
+  #app { width:min(100vw, 440px); height:100dvh; display:flex; flex-direction:column; }
+
+  /* top bar */
+  #top {
+    flex:0 0 42px; display:flex; align-items:center; gap:8px; padding:0 12px;
+    border-bottom:1px solid #221c3a;
+  }
+  #back { color:#9b93c4; text-decoration:none; font-size:13px; font-weight:600; white-space:nowrap; }
+  #back:hover { color:#ece8ff; }
+  #ttl { display:flex; align-items:center; gap:7px; margin-left:auto; }
+  #ttl img { width:20px; height:20px; border-radius:5px; display:block; }
+  #ttl b { font-size:15px; letter-spacing:2.5px; font-weight:800;
+    background:linear-gradient(90deg,#2af5ff,#9d4bff,#ff2d95); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  #chip { font-size:9px; font-weight:800; letter-spacing:1.5px; color:#0a0a14;
+    background:linear-gradient(90deg,#ffd23f,#ff9b3d); border-radius:99px; padding:3px 8px; }
+
+  /* hud */
+  #hud { flex:0 0 46px; display:flex; align-items:center; gap:8px; padding:0 12px; font-size:12px; font-weight:700; }
+  .hcell { color:#cfc8f2; white-space:nowrap; letter-spacing:.5px; }
+  #hrnd  { color:#e7a6ff; }
+  #hcoins { color:#ffd23f; }
+  #hbricks { color:#4be1c4; }
+  #hscore { flex:1; min-width:0; }
+  #htext { font-size:11px; color:#9b93c4; text-align:center; margin-top:3px; letter-spacing:.5px; }
+  #hbarwrap { height:8px; background:#171327; border:1px solid #2e2747; border-radius:99px; overflow:hidden; }
+  #hbar { height:100%; width:0%; border-radius:99px;
+    background:linear-gradient(90deg,#9d4bff,#ffd23f); transition:width .35s cubic-bezier(.2,.8,.3,1); }
+
+  /* stage */
+  #stage { flex:1 1 auto; position:relative; min-height:0; touch-action:none; }
+  canvas { display:block; touch-action:none; }
+
+  #hint {
+    position:absolute; left:50%; bottom:12px; transform:translateX(-50%);
+    background:rgba(23,19,39,.9); border:1px solid #2e2747; border-radius:99px;
+    padding:7px 14px; font-size:11.5px; color:#cfc8f2; white-space:nowrap;
+    pointer-events:none; transition:opacity .5s; letter-spacing:.3px;
+  }
+  #banner {
+    position:absolute; left:50%; top:8px; transform:translateX(-50%);
+    max-width:94%; background:rgba(23,19,39,.94); border:1px solid #ffd23f66; border-radius:10px;
+    padding:7px 13px; font-size:12px; font-weight:600; color:#ffd23f; text-align:center;
+    pointer-events:none; opacity:0; transition:opacity .3s; z-index:5;
+  }
+  #banner.show { opacity:1; }
+
+  /* overlays (shop / end) */
+  .ov {
+    position:absolute; inset:0; display:none; align-items:center; justify-content:center;
+    background:rgba(6,4,14,.72); backdrop-filter:blur(3px); z-index:10; padding:14px;
+  }
+  .ov.show { display:flex; }
+  .panel {
+    width:100%; max-width:340px; max-height:100%; overflow-y:auto;
+    background:#171327; border:2px solid #4be1c4; border-radius:14px; padding:16px;
+    box-shadow:0 12px 40px rgba(0,0,0,.6); animation:pop-in .28s cubic-bezier(.2,1.4,.4,1);
+  }
+  #end .panel { border-color:#ffd23f; text-align:center; }
+  @keyframes pop-in { from { transform:scale(.86); opacity:0; } to { transform:scale(1); opacity:1; } }
+  .ptitle { font-size:19px; font-weight:800; letter-spacing:1px; margin-bottom:4px; }
+  .psub { font-size:12.5px; color:#cfc8f2; line-height:1.45; margin-bottom:12px; }
+  .goldline { font-size:13px; font-weight:800; color:#ffd23f; margin-bottom:10px; }
+  .card {
+    display:flex; align-items:center; gap:10px; background:#100c20; border:1px solid #2e2747;
+    border-radius:10px; padding:9px 10px; margin-bottom:8px;
+  }
+  .card .stripe { flex:0 0 6px; align-self:stretch; border-radius:4px; }
+  .card .cbody { flex:1; min-width:0; }
+  .card .cname { font-size:12.5px; font-weight:800; letter-spacing:1px; }
+  .card .cdesc { font-size:11px; color:#9b93c4; line-height:1.35; margin-top:2px; }
+  .buy {
+    flex:0 0 auto; font:inherit; font-size:12px; font-weight:800; color:#241a00;
+    background:linear-gradient(180deg,#ffe486,#ffd23f); border:0; border-radius:8px;
+    padding:8px 11px; cursor:pointer; letter-spacing:.5px;
+  }
+  .buy:disabled { background:#2e2747; color:#6b6490; cursor:default; }
+  .buy:not(:disabled):active { transform:scale(.94); }
+  .go, .again {
+    display:block; width:100%; font:inherit; font-size:14px; font-weight:800; letter-spacing:1px;
+    color:#04221c; background:linear-gradient(180deg,#8af0de,#4be1c4); border:0; border-radius:10px;
+    padding:12px; cursor:pointer; margin-top:6px;
+  }
+  .again { color:#241a00; background:linear-gradient(180deg,#ffe486,#ffd23f); }
+  .go:active, .again:active { transform:scale(.97); }
+  .soon { font-size:12px; color:#9b93c4; margin-top:12px; }
+  .more { display:inline-block; margin-top:8px; font-size:12.5px; font-weight:700; color:#4be1c4; text-decoration:none; }
+  .more:hover { text-decoration:underline; }
+  .bigscore { font-size:30px; font-weight:800; color:#ffd23f; margin:6px 0 2px; letter-spacing:1px; }
+
+  /* control row */
+  #ctrl { flex:0 0 54px; display:flex; gap:10px; padding:8px 12px 10px; }
+  #ctrl button {
+    flex:1; font:inherit; font-size:13px; font-weight:800; letter-spacing:1.5px; color:#ece8ff;
+    background:#1b1630; border:1px solid #2e2747; border-radius:10px; cursor:pointer;
+    touch-action:manipulation;
+  }
+  #ctrl button:active { background:#2e2747; transform:scale(.97); }
+  #btnDrop { color:#0a0a14; background:linear-gradient(180deg,#2af5ff,#19b8c4); border-color:#2af5ff; }
+</style>
+</head>
+<body>
+<div id="app">
+  <header id="top">
+    <a id="back" href="/games/gatefall.html">&larr; Back</a>
+    <div id="ttl"><img src="/assets/games/gatefall/icon.png" alt=""><b>GATEFALL</b><span id="chip">SNEAK PEEK</span></div>
+  </header>
+
+  <div id="hud">
+    <div class="hcell" id="hrnd">ROUND 1/3</div>
+    <div id="hscore">
+      <div id="hbarwrap"><div id="hbar"></div></div>
+      <div id="htext">0 / 300</div>
+    </div>
+    <div class="hcell" id="hcoins">&#10038; 0</div>
+    <div class="hcell" id="hbricks">&#9638; 45</div>
+  </div>
+
+  <div id="stage">
+    <canvas id="cv"></canvas>
+    <div id="hint">Drag to steer &middot; tap to rotate &middot; swipe down to drop</div>
+    <div id="banner"></div>
+    <div class="ov" id="shop"><div class="panel" id="shopPanel"></div></div>
+    <div class="ov" id="end"><div class="panel" id="endPanel"></div></div>
+  </div>
+
+  <div id="ctrl">
+    <button id="btnRot" type="button">&#10227; ROTATE</button>
+    <button id="btnDrop" type="button">&#11015; DROP</button>
+  </div>
+</div>
+
+<script>
+'use strict';
+/* ============================================================
+   GATEFALL — sneak peek slice.
+   One surge (3 rounds, rising targets), five card gates that
+   transform falling bricks, hole detection, a small shop.
+   Palette + rules lifted from the real Godot prototype.
+   ============================================================ */
+
+// ---------- constants (from the real game) ----------
+const COLS = 10, ROWS = 14, GATES = 5, GCOLS = 2;
+const SHAPES = [                                        // jagged, notched — not Tetris
+  [[0,0]],                                              // pip
+  [[0,0],[1,0]],                                        // bar
+  [[0,0],[0,1]],                                        // vbar
+  [[0,0],[1,0],[2,0]],                                  // line
+  [[0,0],[1,0],[1,1]],                                  // elbow
+  [[0,0],[1,0],[2,0],[2,1]],                            // hook
+  [[0,1],[1,1],[1,0],[2,0]],                            // step
+  [[0,0],[0,1],[1,1],[2,1],[2,0]],                      // U (makes a hole)
+  [[0,0],[1,0],[2,0],[1,1],[1,2]],                      // T-fang
+  [[0,0],[1,0],[2,0],[0,1],[2,1]],                      // bridge (hole)
+  [[0,0],[1,0],[0,1],[1,1],[2,1],[0,2]],                // chair
+  [[0,0],[1,0],[0,1],[1,1],[0,2],[1,2]],                // slab 2x3
+];
+const SIZE_BAG = [1,1,2,2,2,3,3,3,4,4,5,6];
+const MATCOL = { norm:'#7c6df2', gold:'#ffd23f', glass:'#cfeeff', steel:'#9aa3b2', clay:'#c9794a' };
+const MATVAL = { norm:10, gold:50, glass:30, steel:10, clay:10 };
+const CARDS = {
+  clay:  { name:'CLAY',     tint:'#c9794a', mat:'clay',  price:4, desc:'Bricks turn to clay: fills one 1-cell hole beside where it lands.' },
+  gold:  { name:'GOLD',     tint:'#ffd23f', mat:'gold',  price:5, desc:'Bricks turn to gold: each block scores 5x when cleared.' },
+  steel: { name:'STEEL',    tint:'#9aa3b2', mat:'steel', price:4, desc:'Bricks turn to steel: crush one layer of blocks directly beneath.' },
+  glass: { name:'GLASS',    tint:'#cfeeff', mat:'glass', price:4, desc:'Bricks turn to glass: 3x value, but shatters if left unsupported.' },
+  key:   { name:'KEYHOLE',  tint:'#e7a6ff', price:5, desc:'Passive: when a 1-cell hole gets filled, that entire row clears. Loves Clay.' },
+  cave:  { name:'CAVE TAX', tint:'#4be1c4', price:5, desc:'Passive: +1 multiplier per enclosed hole on every clear.' },
+  geode: { name:'GEODE',    tint:'#d46df2', price:6, desc:'Passive: the first new hole each round fills itself with gold.' },
+};
+const ROUNDS = [ { target:250, budget:55 }, { target:450, budget:60 }, { target:700, budget:65 } ];
+
+// ---------- dom ----------
+const cv = document.getElementById('cv'), ctx = cv.getContext('2d');
+const stage = document.getElementById('stage');
+const hintEl = document.getElementById('hint'), bannerEl = document.getElementById('banner');
+const shopEl = document.getElementById('shop'), shopPanel = document.getElementById('shopPanel');
+const endEl = document.getElementById('end'), endPanel = document.getElementById('endPanel');
+const hrnd = document.getElementById('hrnd'), htext = document.getElementById('htext');
+const hbar = document.getElementById('hbar'), hcoins = document.getElementById('hcoins'), hbricks = document.getElementById('hbricks');
+
+// ---------- layout ----------
+let W = 0, H = 0, cell = 30, boardX = 0, boardY = 0, gateY = 0, gateH = 40;
+function resize() {
+  const r = stage.getBoundingClientRect();
+  const dpr = window.devicePixelRatio || 1;
+  W = Math.round(r.width); H = Math.round(r.height);
+  cv.width = W * dpr; cv.height = H * dpr;
+  cv.style.width = W + 'px'; cv.style.height = H + 'px';
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  cell = Math.max(14, Math.floor(Math.min((W - 14) / COLS, H / (ROWS + 5.4))));
+  gateH = Math.round(cell * 1.75);
+  const totalH = ROWS * cell + gateH + Math.round(cell * 3.5);
+  boardX = Math.round((W - COLS * cell) / 2);
+  const top = Math.max(0, Math.round((H - totalH) / 2));
+  gateY = top + Math.round(cell * 3.5);
+  boardY = gateY + gateH;
+}
+window.addEventListener('resize', resize);
+
+// ---------- state ----------
+let grid = [];                 // ROWS x COLS of null | {mat}
+let holes = [];                // cached hole regions for drawing
+let gates = ['', 'clay', '', 'gold', ''];   // card id per gate ('' = open lane)
+let level = 1, target = 300, bricksLeft = 45;
+let score = 0, runTotal = 0, coins = 0;
+let geodeUsed = false, sinceSmall = 0;
+let bag = [], nextQ = [], cur = null;
+let state = 'aim';             // aim | fall | shop | placing | over
+let fall = null, placingId = null, shopOffers = [];
+let dropsMade = 0;
+
+// juice
+let parts = [], pops = [], fxs = [];
+let shake = 0, freeze = 0, pulse = 0, lockFx = null;
+const stars = [];
+for (let i = 0; i < 26; i++) stars.push({ x: Math.random(), y: Math.random(), s: Math.random() * 1.6 + .5, p: Math.random() * 6.28 });
+
+// ---------- helpers ----------
+const key = (x, y) => x + ',' + y;
+const hasGate = id => gates.indexOf(id) !== -1;
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const ease = t => 1 - Math.pow(1 - t, 3);
+
+function toast(msg, dur) {
+  bannerEl.textContent = msg;
+  bannerEl.classList.add('show');
+  clearTimeout(toast.tm);
+  if (dur !== 0) toast.tm = setTimeout(() => bannerEl.classList.remove('show'), dur || 2600);
+}
+function hideHint() {
+  if (!hideHint.done) { hideHint.done = true; hintEl.style.opacity = '0'; }
+}
+function updateHUD() {
+  hrnd.textContent = 'ROUND ' + level + '/3';
+  htext.textContent = score + ' / ' + target;
+  hbar.style.width = clamp(score / target * 100, 0, 100) + '%';
+  hcoins.innerHTML = '&#10038; ' + coins;
+  hbricks.innerHTML = '&#9638; ' + Math.max(0, bricksLeft);
+}
+
+// ---------- bricks ----------
+const SIZE_SHAPES = {};
+for (const s of SHAPES) (SIZE_SHAPES[s.length] = SIZE_SHAPES[s.length] || []).push(s);
+
+function drawSize() {
+  if (!bag.length) { bag = SIZE_BAG.slice(); for (let i = bag.length - 1; i > 0; i--) { const j = (Math.random() * (i + 1)) | 0; [bag[i], bag[j]] = [bag[j], bag[i]]; } }
+  let size = bag.pop();
+  if (sinceSmall >= 4 && size > 2) size = 1 + ((Math.random() * 2) | 0);   // guaranteed-small cadence
+  sinceSmall = size <= 2 ? 0 : sinceSmall + 1;
+  return size;
+}
+function makeBrick() {
+  const opts = SIZE_SHAPES[drawSize()];
+  const cells = opts[(Math.random() * opts.length) | 0].map(c => [c[0], c[1]]);
+  const w = Math.max(...cells.map(c => c[0])) + 1, h = Math.max(...cells.map(c => c[1])) + 1;
+  return { cells, w, h, mat: 'norm' };
+}
+function spawnBrick() {
+  cur = nextQ.shift();
+  nextQ.push(makeBrick());
+  cur.x = Math.floor((COLS - cur.w) / 2);
+  cur.mat = 'norm';
+  state = 'aim';
+}
+function collide(cells, x, y) {
+  for (const c of cells) {
+    const gx = x + c[0], gy = y + c[1];
+    if (gx < 0 || gx >= COLS || gy >= ROWS) return true;
+    if (gy >= 0 && grid[gy][gx]) return true;
+  }
+  return false;
+}
+function landingY(cells, x, h) {
+  let y = -h;
+  while (!collide(cells, x, y + 1)) y++;
+  return y;
+}
+function gateOf() {
+  return clamp(Math.floor((cur.x + cur.w / 2) / GCOLS), 0, GATES - 1);
+}
+
+// ---------- moves ----------
+function move(d) {
+  if (state !== 'aim') return;
+  cur.x = clamp(cur.x + d, 0, COLS - cur.w);
+}
+function rotate() {
+  if (state !== 'aim') return;
+  hideHint();
+  const h = cur.h;
+  let nc = cur.cells.map(c => [h - 1 - c[1], c[0]]);
+  const mx = Math.min(...nc.map(c => c[0])), my = Math.min(...nc.map(c => c[1]));
+  nc = nc.map(c => [c[0] - mx, c[1] - my]);
+  cur.cells = nc;
+  cur.w = Math.max(...nc.map(c => c[0])) + 1;
+  cur.h = Math.max(...nc.map(c => c[1])) + 1;
+  cur.x = clamp(cur.x, 0, COLS - cur.w);
+}
+function drop() {
+  if (state !== 'aim') return;
+  hideHint();
+  const g = gateOf();
+  const land = landingY(cur.cells, cur.x, cur.h);
+  bricksLeft -= cur.cells.length;
+  dropsMade++;
+  updateHUD();
+  const y0 = gateY - 6 - cur.h * cell;
+  const y1 = boardY + land * cell;
+  fall = { y0, y1, t: 0, dur: 0.15 + 0.016 * (y1 - y0) / cell, land, gate: g, applied: false };
+  state = 'fall';
+}
+
+// ---------- holes (flood from the top row; unreached empties are holes) ----------
+function findHoles() {
+  const open = Array.from({ length: ROWS }, () => new Array(COLS).fill(false));
+  const q = [];
+  for (let x = 0; x < COLS; x++) if (!grid[0][x]) { open[0][x] = true; q.push([x, 0]); }
+  while (q.length) {
+    const [x, y] = q.pop();
+    for (const [dx, dy] of [[1,0],[-1,0],[0,1],[0,-1]]) {
+      const nx = x + dx, ny = y + dy;
+      if (nx < 0 || nx >= COLS || ny < 0 || ny >= ROWS) continue;
+      if (grid[ny][nx] || open[ny][nx]) continue;
+      open[ny][nx] = true; q.push([nx, ny]);
+    }
+  }
+  const seen = Array.from({ length: ROWS }, () => new Array(COLS).fill(false));
+  const out = [];
+  for (let y = 1; y < ROWS; y++) for (let x = 0; x < COLS; x++) {
+    if (grid[y][x] || open[y][x] || seen[y][x]) continue;
+    const cells = [], qq = [[x, y]];
+    seen[y][x] = true;
+    while (qq.length) {
+      const [cx, cy] = qq.pop();
+      cells.push({ x: cx, y: cy });
+      for (const [dx, dy] of [[1,0],[-1,0],[0,1],[0,-1]]) {
+        const nx = cx + dx, ny = cy + dy;
+        if (nx < 0 || nx >= COLS || ny < 0 || ny >= ROWS) continue;
+        if (grid[ny][nx] || open[ny][nx] || seen[ny][nx]) continue;
+        seen[ny][nx] = true; qq.push([nx, ny]);
+      }
+    }
+    out.push({ cells });
+  }
+  return out;
+}
+
+// ---------- resolution pipeline ----------
+function clearRows(force) {
+  const rows = new Set(force);
+  for (let y = 0; y < ROWS; y++) {
+    let full = true;
+    for (let x = 0; x < COLS; x++) if (!grid[y][x]) { full = false; break; }
+    if (full) rows.add(y);
+  }
+  let value = 0;
+  for (const y of rows) for (let x = 0; x < COLS; x++) if (grid[y][x]) value += MATVAL[grid[y][x].mat] || 10;
+  if (rows.size) {
+    for (const y of rows) {
+      fxs.push({ kind: 'row', y, t: 0, dur: 0.35 });
+      for (let x = 0; x < COLS; x++) if (grid[y][x]) burst(boardX + (x + .5) * cell, boardY + (y + .5) * cell, MATCOL[grid[y][x].mat], 2);
+    }
+    const kept = [];
+    for (let y = 0; y < ROWS; y++) if (!rows.has(y)) kept.push(grid[y]);
+    while (kept.length < ROWS) kept.unshift(new Array(COLS).fill(null));
+    grid = kept;
+  }
+  return { lines: rows.size, value, rows: [...rows] };
+}
+function shatterGlass() {
+  let changed = true, n = 0;
+  while (changed) {
+    changed = false;
+    for (let y = ROWS - 2; y >= 0; y--) for (let x = 0; x < COLS; x++) {
+      const b = grid[y][x];
+      if (b && b.mat === 'glass' && !grid[y + 1][x]) {
+        burst(boardX + (x + .5) * cell, boardY + (y + .5) * cell, '#cfeeff', 5);
+        grid[y][x] = null; changed = true; n++;
+      }
+    }
+  }
+  if (n) { pop(W / 2, boardY + cell * 3, 'GLASS SHATTERED', 14, '#cfeeff'); shake = Math.max(shake, 4); }
+}
+function resolveLock() {
+  const brick = cur, land = fall.land;
+  const preHoles = findHoles();
+  const pre1 = new Set(), preAll = new Set();
+  for (const h of preHoles) {
+    for (const c of h.cells) preAll.add(key(c.x, c.y));
+    if (h.cells.length === 1) pre1.add(key(h.cells[0].x, h.cells[0].y));
+  }
+  // place
+  let topped = false;
+  const placed = [];
+  for (const c of brick.cells) {
+    const gx = brick.x + c[0], gy = land + c[1];
+    if (gy < 0) { topped = true; continue; }
+    grid[gy][gx] = { mat: brick.mat };
+    placed.push({ x: gx, y: gy });
+  }
+  lockFx = { cells: new Set(placed.map(p => key(p.x, p.y))), t: 0 };
+  shake = Math.max(shake, 3);
+  for (const p of placed) if (p.y === Math.max(...placed.filter(q => q.x === p.x).map(q => q.y)))
+    burst(boardX + (p.x + .5) * cell, boardY + (p.y + 1) * cell, MATCOL[brick.mat], 2, true);
+  if (topped) { gameEnd(false, 'TOPPED OUT', 'The stack reached the gates. Scored ' + (runTotal + score) + ' pts.'); return; }
+
+  // STEEL: crush one layer directly beneath the brick footprint
+  if (brick.mat === 'steel') {
+    const bottoms = new Map();
+    for (const p of placed) if (!bottoms.has(p.x) || p.y > bottoms.get(p.x)) bottoms.set(p.x, p.y);
+    let crushed = 0;
+    for (const [x, by] of bottoms) {
+      for (let y = by + 1; y < ROWS; y++) if (grid[y][x]) {
+        burst(boardX + (x + .5) * cell, boardY + (y + .5) * cell, '#9aa3b2', 4);
+        grid[y][x] = null; crushed++; break;
+      }
+    }
+    if (crushed) { pop(W / 2, boardY + cell * 2, 'STEEL CRUSH', 15, '#c8d2e2'); shake = Math.max(shake, 6); }
+  }
+  // CLAY: fill one adjacent 1-cell hole (and remember it for Keyhole)
+  let clayFilledCell = null;
+  if (brick.mat === 'clay') {
+    const hs = findHoles();
+    outer:
+    for (const h of hs) {
+      if (h.cells.length !== 1) continue;
+      const c = h.cells[0];
+      for (const p of placed) {
+        if (Math.abs(p.x - c.x) + Math.abs(p.y - c.y) === 1) {
+          grid[c.y][c.x] = { mat: 'clay' };
+          clayFilledCell = c;
+          pop(boardX + (c.x + .5) * cell, boardY + c.y * cell, 'CLAY FILL', 13, '#e8a97e');
+          break outer;
+        }
+      }
+    }
+  }
+  // KEYHOLE: filling a 1-cell hole (via landing or a Clay fill) clears that row
+  const force = new Set();
+  if (hasGate('key')) {
+    for (const p of placed) if (pre1.has(key(p.x, p.y))) force.add(p.y);
+    if (clayFilledCell) force.add(clayFilledCell.y);
+    for (const y of force) pop(boardX + COLS * cell * .5, boardY + y * cell, 'KEYHOLE!', 16, '#e7a6ff');
+  }
+
+  const res = clearRows(force);
+  shatterGlass();
+
+  // holes: seal bonus + geode
+  let holesNow = findHoles();
+  let sealCells = 0, firstNew = null;
+  for (const h of holesNow) {
+    if (h.cells.every(c => !preAll.has(key(c.x, c.y)))) {
+      sealCells += h.cells.length;
+      if (!firstNew) firstNew = h;
+      const c0 = h.cells[0];
+      fxs.push({ kind: 'seal', cells: h.cells, t: 0, dur: 0.8 });
+      pop(boardX + (c0.x + .5) * cell, boardY + c0.y * cell - 6, 'HOLE SEALED', 12, '#4be1c4');
+    }
+  }
+  let bonus = sealCells > 0 ? 15 * sealCells : 0;
+  if (firstNew && hasGate('geode') && !geodeUsed) {
+    geodeUsed = true;
+    for (const c of firstNew.cells) {
+      grid[c.y][c.x] = { mat: 'gold' };
+      burst(boardX + (c.x + .5) * cell, boardY + (c.y + .5) * cell, '#ffd23f', 4);
+    }
+    pop(W / 2, boardY + cell * 4, 'GEODE! GOLD INSIDE', 16, '#ffd23f');
+    holesNow = findHoles();
+  }
+
+  // score: value x multiplier (the real game's formula)
+  if (res.lines > 0) {
+    let mult = res.lines;
+    if (hasGate('cave')) mult += holesNow.length;
+    const gained = res.value * mult;
+    score += gained;
+    coins += res.lines;
+    const ry = boardY + (res.rows.reduce((a, b) => a + b, 0) / res.rows.length + .5) * cell;
+    const heat = clamp((mult - 1) / 5, 0, 1);
+    pop(W / 2, ry, '+' + gained + ' ✦ x' + mult, Math.min(20 + mult * 3, 40), mixColor('#ffd23f', '#ff5f3f', heat));
+    pop(W / 2, ry + 26, '+' + res.lines + ' ✸ gold', 12, '#ffd23f');
+    shake = Math.max(shake, 4 + res.lines * 3);
+    if (res.lines > 1) freeze = 0.07;
+  }
+  if (bonus) { score += bonus; pop(W / 2, boardY + cell * 5.5, 'HOLES +' + bonus, 14, '#4be1c4'); }
+
+  holes = holesNow;
+  updateHUD();
+
+  if (score >= target) { roundWin(); return; }
+  if (bricksLeft <= 0) { gameEnd(false, 'OUT OF BRICKS', 'Scored ' + score + ' of the ' + target + ' this round asked for. So close — one better gate would do it.'); return; }
+  spawnBrick();
+}
+function mixColor(a, b, t) {
+  const pa = [1, 3, 5].map(i => parseInt(a.substr(i, 2), 16));
+  const pb = [1, 3, 5].map(i => parseInt(b.substr(i, 2), 16));
+  return 'rgb(' + pa.map((v, i) => Math.round(v + (pb[i] - v) * t)).join(',') + ')';
+}
+
+// ---------- rounds / shop / end ----------
+function startRound(n) {
+  level = n;
+  const r = ROUNDS[n - 1];
+  target = r.target; bricksLeft = r.budget;
+  runTotal += score; score = 0;
+  geodeUsed = false; sinceSmall = 0; dropsMade = 0;
+  grid = Array.from({ length: ROWS }, () => new Array(COLS).fill(null));
+  holes = [];
+  parts = []; pops = []; fxs = []; lockFx = null;
+  nextQ = [makeBrick(), makeBrick()];
+  spawnBrick();
+  updateHUD();
+  if (n === 1) toast('SURGE 1 · CLASSIC — pass bricks through the gates', 4000);
+  else toast('ROUND ' + n + ' — target ' + target, 3000);
+}
+function roundWin() {
+  coins += 4;
+  updateHUD();
+  pop(W / 2, boardY + cell * 4, 'ROUND CLEAR ✦', 24, '#ffd23f');
+  if (level >= 3) {
+    gameEnd(true, 'SURGE CLEAR ✦', 'You beat all 3 rounds of Surge 1 · CLASSIC. The full run climbs 12 surges of shifting rules — Glassworks, Midas, Fog, the Hungry Cave...');
+    return;
+  }
+  state = 'shop';
+  buildShopOffers();
+  renderShop();
+  setTimeout(() => shopEl.classList.add('show'), 450);
+}
+function buildShopOffers() {
+  const pool = Object.keys(CARDS).filter(id => !hasGate(id));
+  for (let i = pool.length - 1; i > 0; i--) { const j = (Math.random() * (i + 1)) | 0; [pool[i], pool[j]] = [pool[j], pool[i]]; }
+  shopOffers = pool.slice(0, 3);
+}
+function renderShop() {
+  let html = '<div class="ptitle" style="color:#4be1c4">ROUND ' + level + ' CLEAR ✦</div>' +
+    '<div class="psub">Scored <b>' + score + '</b> / ' + target + '. Spend gold on a gate card — where you install it decides which columns it rules.</div>' +
+    '<div class="goldline">&#10038; ' + coins + ' gold</div>';
+  for (const id of shopOffers) {
+    const c = CARDS[id];
+    const can = coins >= c.price;
+    html += '<div class="card"><div class="stripe" style="background:' + c.tint + '"></div>' +
+      '<div class="cbody"><div class="cname" style="color:' + c.tint + '">' + c.name + '</div>' +
+      '<div class="cdesc">' + c.desc + '</div></div>' +
+      '<button class="buy" data-id="' + id + '"' + (can ? '' : ' disabled') + '>&#10038; ' + c.price + '</button></div>';
+  }
+  if (!shopOffers.length) html += '<div class="psub">Sold out — your gates are stacked.</div>';
+  html += '<button class="go" id="goBtn">START ROUND ' + (level + 1) + ' &rarr;</button>';
+  shopPanel.innerHTML = html;
+  shopPanel.querySelectorAll('.buy').forEach(b => b.addEventListener('click', () => buyCard(b.dataset.id)));
+  document.getElementById('goBtn').addEventListener('click', () => {
+    shopEl.classList.remove('show');
+    startRound(level + 1);
+  });
+}
+function buyCard(id) {
+  const c = CARDS[id];
+  if (coins < c.price || state !== 'shop') return;
+  coins -= c.price;
+  placingId = id;
+  shopOffers = shopOffers.filter(o => o !== id);
+  shopEl.classList.remove('show');
+  state = 'placing';
+  updateHUD();
+  toast('TAP A GATE ARCH TO INSTALL ' + c.name, 0);
+}
+function installAt(g) {
+  gates[g] = placingId;
+  const c = CARDS[placingId];
+  placingId = null;
+  burst(boardX + (g + .5) * GCOLS * cell, gateY + gateH / 2, c.tint, 14);
+  shake = Math.max(shake, 3);
+  toast(c.name + ' installed over columns ' + (g * GCOLS + 1) + '–' + (g * GCOLS + 2), 2200);
+  state = 'shop';
+  renderShop();
+  shopEl.classList.add('show');
+}
+function gameEnd(win, title, body) {
+  state = 'over';
+  const total = runTotal + score;
+  endPanel.innerHTML =
+    '<div class="ptitle" style="color:' + (win ? '#ffd23f' : '#ff5f3f') + '">' + title + '</div>' +
+    '<div class="bigscore">' + total + '</div>' +
+    '<div class="psub" style="margin-bottom:4px">total score</div>' +
+    '<div class="psub">' + body + '</div>' +
+    '<button class="again" id="againBtn">PLAY AGAIN</button>' +
+    '<div class="soon">Coming soon to the App Store</div>' +
+    '<a class="more" href="/games/gatefall.html">More about GateFall &rarr;</a>';
+  document.getElementById('againBtn').addEventListener('click', () => location.reload());
+  setTimeout(() => endEl.classList.add('show'), win ? 700 : 450);
+}
+
+// ---------- particles / pops ----------
+function burst(x, y, color, n, up) {
+  for (let i = 0; i < n * 3; i++) {
+    const a = up ? -Math.PI / 2 + (Math.random() - .5) * 1.6 : Math.random() * 6.28;
+    const sp = 40 + Math.random() * 130;
+    parts.push({ x, y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp - 30, life: .5 + Math.random() * .4, t: 0, color, s: 1.5 + Math.random() * 2.5 });
+  }
+}
+function pop(x, y, text, size, color) {
+  pops.push({ x, y, text, size, color, t: 0, dur: 1 + size / 30 });
+}
+
+// ---------- input ----------
+let ptr = null;
+const inUI = e => e.target && e.target.closest && e.target.closest('.ov, button, a');
+stage.addEventListener('pointerdown', e => {
+  if (inUI(e)) return;
+  e.preventDefault();
+  hideHint();
+  ptr = { x: e.clientX, y: e.clientY, t: performance.now(), bx: cur ? cur.x : 0, moved: false };
+}, { passive: false });
+stage.addEventListener('pointermove', e => {
+  if (!ptr) return;
+  e.preventDefault();
+  const dx = e.clientX - ptr.x, dy = e.clientY - ptr.y;
+  if (Math.abs(dx) > 9 || Math.abs(dy) > 9) ptr.moved = true;
+  if (state === 'aim' && cur) cur.x = clamp(ptr.bx + Math.round(dx / cell), 0, COLS - cur.w);
+}, { passive: false });
+stage.addEventListener('pointerup', e => {
+  if (!ptr) return;
+  e.preventDefault();
+  const dx = e.clientX - ptr.x, dy = e.clientY - ptr.y;
+  const dt = performance.now() - ptr.t;
+  const rect = cv.getBoundingClientRect();
+  const px = e.clientX - rect.left, py = e.clientY - rect.top;
+  const tapped = dt < 350 && Math.abs(dx) <= 9 && Math.abs(dy) <= 9;
+  ptr = null;
+  if (state === 'placing') {
+    if (py > gateY - cell && py < boardY + cell * 1.5) {
+      const g = clamp(Math.floor((px - boardX) / (GCOLS * cell)), 0, GATES - 1);
+      installAt(g);
+    }
+    return;
+  }
+  if (state !== 'aim') return;
+  if (dy > 60 && dy > Math.abs(dx) * 1.5) { drop(); return; }
+  if (tapped) rotate();
+}, { passive: false });
+stage.addEventListener('pointercancel', () => { ptr = null; });
+stage.addEventListener('touchmove', e => { if (!inUI(e)) e.preventDefault(); }, { passive: false });
+
+document.addEventListener('keydown', e => {
+  const k = e.key;
+  if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', ' '].includes(k)) e.preventDefault();
+  hideHint();
+  if (state !== 'aim') return;
+  if (k === 'ArrowLeft' || k === 'a') move(-1);
+  else if (k === 'ArrowRight' || k === 'd') move(1);
+  else if (k === 'ArrowUp' || k === 'z' || k === 'x' || k === 'w') rotate();
+  else if (k === 'ArrowDown' || k === ' ' || k === 'Enter' || k === 's') drop();
+});
+document.getElementById('btnRot').addEventListener('click', () => { hideHint(); rotate(); });
+document.getElementById('btnDrop').addEventListener('click', () => { hideHint(); drop(); });
+
+// ---------- drawing ----------
+function roundRect(x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+}
+function drawBlock(px, py, s, mat, alpha, sy) {
+  const col = MATCOL[mat] || MATCOL.norm;
+  const hh = s * (sy || 1);
+  const oy = s - hh;
+  ctx.globalAlpha = (alpha == null ? 1 : alpha) * (mat === 'glass' ? .8 : 1);
+  ctx.fillStyle = col;
+  roundRect(px + 1, py + 1 + oy, s - 2, hh - 2, 3);
+  ctx.fill();
+  ctx.fillStyle = 'rgba(255,255,255,.28)';
+  ctx.fillRect(px + 2, py + 2 + oy, s - 4, Math.max(2, s * .12));
+  ctx.fillStyle = 'rgba(0,0,0,.3)';
+  ctx.fillRect(px + 2, py + oy + hh - 2 - Math.max(2, s * .1), s - 4, Math.max(2, s * .1));
+  if (mat === 'glass') {
+    ctx.strokeStyle = 'rgba(255,255,255,.7)';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(px + s * .25, py + oy + hh * .7); ctx.lineTo(px + s * .6, py + oy + hh * .3); ctx.stroke();
+  }
+  if (mat === 'gold') {
+    ctx.fillStyle = 'rgba(255,255,255,.5)';
+    ctx.fillRect(px + s * .3, py + oy + hh * .35, s * .16, s * .16);
+  }
+  ctx.globalAlpha = 1;
+}
+function drawBrickAt(brick, xpx, ypx, alpha) {
+  for (const c of brick.cells) drawBlock(xpx + c[0] * cell, ypx + c[1] * cell, cell, brick.mat, alpha);
+}
+function drawBG() {
+  const g = ctx.createLinearGradient(0, 0, 0, H);
+  g.addColorStop(0, '#0a0618');
+  g.addColorStop(.42, '#1a0b2e');
+  g.addColorStop(1, '#2a0f3e');
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, W, H);
+  // stars in the airspace
+  for (const s of stars) {
+    const a = .25 + .35 * (0.5 + 0.5 * Math.sin(pulse * 2 + s.p));
+    ctx.fillStyle = 'rgba(190,180,255,' + a.toFixed(2) + ')';
+    ctx.fillRect(s.x * W, s.y * gateY * .9, s.s, s.s);
+  }
+  // board well
+  ctx.fillStyle = 'rgba(8,6,18,.82)';
+  ctx.fillRect(boardX - 3, boardY - 2, COLS * cell + 6, ROWS * cell + 5);
+  ctx.strokeStyle = 'rgba(157,75,255,.55)';
+  ctx.lineWidth = 2;
+  ctx.shadowColor = '#9d4bff'; ctx.shadowBlur = 10;
+  ctx.strokeRect(boardX - 3, boardY - 2, COLS * cell + 6, ROWS * cell + 5);
+  ctx.shadowBlur = 0;
+  // grid lines
+  ctx.strokeStyle = 'rgba(124,109,242,.09)';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  for (let x = 1; x < COLS; x++) { ctx.moveTo(boardX + x * cell, boardY); ctx.lineTo(boardX + x * cell, boardY + ROWS * cell); }
+  for (let y = 1; y < ROWS; y++) { ctx.moveTo(boardX, boardY + y * cell); ctx.lineTo(boardX + COLS * cell, boardY + y * cell); }
+  ctx.stroke();
+}
+function drawGates() {
+  const active = (state === 'aim' && cur) ? gateOf() : -1;
+  for (let g = 0; g < GATES; g++) {
+    const x0 = boardX + g * GCOLS * cell, w = GCOLS * cell;
+    const card = gates[g] ? CARDS[gates[g]] : null;
+    const col = card ? card.tint : '#8c82b8';
+    const isA = g === active;
+    const glow = isA ? 0.5 + 0.5 * Math.sin(pulse * 6) : 0;
+    // drop-region beam under the active gate
+    if (isA) {
+      ctx.fillStyle = card ? card.tint + '14' : 'rgba(140,130,190,.06)';
+      ctx.fillRect(x0, boardY, w, ROWS * cell);
+    }
+    if (state === 'placing') {
+      ctx.fillStyle = 'rgba(255,210,63,' + (0.08 + 0.06 * Math.sin(pulse * 5 + g)) + ')';
+      ctx.fillRect(x0 + 2, gateY, w - 4, gateH);
+    }
+    // arch
+    const m = 4, base = gateY + gateH - 3, top = gateY + 4;
+    ctx.strokeStyle = col;
+    ctx.lineWidth = isA ? 3 : 2;
+    ctx.globalAlpha = card ? (isA ? 1 : .85) : (isA ? .8 : .4);
+    ctx.shadowColor = col;
+    ctx.shadowBlur = card ? 8 + glow * 10 : 3;
+    ctx.beginPath();
+    ctx.moveTo(x0 + m, base);
+    ctx.lineTo(x0 + m, top + (base - top) * .45);
+    ctx.quadraticCurveTo(x0 + m, top, x0 + w / 2, top);
+    ctx.quadraticCurveTo(x0 + w - m, top, x0 + w - m, top + (base - top) * .45);
+    ctx.lineTo(x0 + w - m, base);
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+    // label
+    ctx.fillStyle = col;
+    ctx.font = '700 ' + Math.max(8, Math.round(cell * .28)) + 'px -apple-system, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(card ? card.name : 'OPEN', x0 + w / 2, base - Math.round(cell * .28));
+    ctx.globalAlpha = 1;
+  }
+}
+function drawHoles() {
+  const a = 0.14 + 0.08 * Math.sin(pulse * 4);
+  for (const h of holes) {
+    ctx.fillStyle = 'rgba(75,225,196,' + a.toFixed(3) + ')';
+    const set = new Set(h.cells.map(c => key(c.x, c.y)));
+    let cx = 0, cy = 0;
+    for (const c of h.cells) {
+      ctx.fillRect(boardX + c.x * cell, boardY + c.y * cell, cell, cell);
+      cx += c.x; cy += c.y;
+    }
+    ctx.strokeStyle = 'rgba(75,225,196,.75)';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    for (const c of h.cells) {
+      const px = boardX + c.x * cell, py = boardY + c.y * cell;
+      if (!set.has(key(c.x, c.y - 1))) { ctx.moveTo(px, py); ctx.lineTo(px + cell, py); }
+      if (!set.has(key(c.x, c.y + 1))) { ctx.moveTo(px, py + cell); ctx.lineTo(px + cell, py + cell); }
+      if (!set.has(key(c.x - 1, c.y))) { ctx.moveTo(px, py); ctx.lineTo(px, py + cell); }
+      if (!set.has(key(c.x + 1, c.y))) { ctx.moveTo(px + cell, py); ctx.lineTo(px + cell, py + cell); }
+    }
+    ctx.stroke();
+    ctx.fillStyle = '#4be1c4';
+    ctx.font = '700 ' + Math.round(cell * .42) + 'px -apple-system, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(String(h.cells.length), boardX + (cx / h.cells.length + .5) * cell, boardY + (cy / h.cells.length + .5) * cell);
+    ctx.textBaseline = 'alphabetic';
+  }
+}
+function drawGrid() {
+  for (let y = 0; y < ROWS; y++) for (let x = 0; x < COLS; x++) {
+    const b = grid[y][x];
+    if (!b) continue;
+    let sy = 1;
+    if (lockFx && lockFx.t < .16 && lockFx.cells.has(key(x, y))) sy = .68 + .32 * ease(lockFx.t / .16);
+    drawBlock(boardX + x * cell, boardY + y * cell, cell, b.mat, 1, sy);
+  }
+}
+function drawQueue() {
+  const s = Math.max(6, Math.round(cell * .34));
+  let qx = boardX + 4;
+  const qy = 12;
+  ctx.fillStyle = '#9b93c4';
+  ctx.font = '700 10px -apple-system, sans-serif';
+  ctx.textAlign = 'left';
+  ctx.fillText('NEXT', qx, qy + 8);
+  qx += 36;
+  for (const b of nextQ) {
+    for (const c of b.cells) {
+      ctx.fillStyle = 'rgba(124,109,242,.75)';
+      ctx.fillRect(qx + c[0] * s, qy + c[1] * s, s - 1, s - 1);
+    }
+    qx += (b.w + 1.2) * s;
+  }
+}
+function drawAim() {
+  if (!cur) return;
+  const g = gateOf(), card = gates[g] ? CARDS[gates[g]] : null;
+  const hoverY = gateY - 6 - cur.h * cell + Math.sin(pulse * 3) * 2;
+  // ghost landing
+  const land = landingY(cur.cells, cur.x, cur.h);
+  ctx.setLineDash([4, 3]);
+  ctx.strokeStyle = card ? card.tint : 'rgba(200,190,255,.55)';
+  ctx.globalAlpha = .65;
+  ctx.lineWidth = 1.5;
+  for (const c of cur.cells) {
+    const gy = land + c[1];
+    if (gy < 0) continue;
+    ctx.strokeRect(boardX + (cur.x + c[0]) * cell + 2, boardY + gy * cell + 2, cell - 4, cell - 4);
+  }
+  ctx.setLineDash([]);
+  ctx.globalAlpha = 1;
+  // transform preview tag next to the brick
+  if (card && card.mat) {
+    ctx.fillStyle = card.tint;
+    ctx.font = '700 10px -apple-system, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.globalAlpha = .5 + .3 * Math.sin(pulse * 5);
+    ctx.fillText('↓ ' + card.name, boardX + (cur.x + cur.w / 2) * cell, hoverY - 6);
+    ctx.globalAlpha = 1;
+  }
+  drawBrickAt(cur, boardX + cur.x * cell, hoverY);
+}
+function drawFall() {
+  const p = clamp(fall.t / fall.dur, 0, 1);
+  const yp = fall.y0 + (fall.y1 - fall.y0) * p * p;
+  // trail
+  for (let i = 1; i <= 3; i++) drawBrickAt(cur, boardX + cur.x * cell, yp - i * cell * .6, .12 / i);
+  drawBrickAt(cur, boardX + cur.x * cell, yp);
+}
+function drawFx(dt) {
+  for (let i = fxs.length - 1; i >= 0; i--) {
+    const f = fxs[i];
+    f.t += dt;
+    const p = f.t / f.dur;
+    if (p >= 1) { fxs.splice(i, 1); continue; }
+    if (f.kind === 'row') {
+      ctx.fillStyle = 'rgba(255,255,255,' + (0.55 * (1 - p)).toFixed(3) + ')';
+      ctx.fillRect(boardX, boardY + f.y * cell, COLS * cell, cell);
+    } else if (f.kind === 'flash') {
+      ctx.fillStyle = f.color + Math.round(120 * (1 - p)).toString(16).padStart(2, '0');
+      ctx.fillRect(f.x, f.y, f.w, f.h);
+    } else if (f.kind === 'seal') {
+      ctx.strokeStyle = 'rgba(75,225,196,' + (0.9 * (1 - p)).toFixed(3) + ')';
+      ctx.lineWidth = 2 + 4 * p;
+      for (const c of f.cells) ctx.strokeRect(boardX + c.x * cell - 3 * p, boardY + c.y * cell - 3 * p, cell + 6 * p, cell + 6 * p);
+    }
+  }
+  for (let i = parts.length - 1; i >= 0; i--) {
+    const q = parts[i];
+    q.t += dt;
+    if (q.t >= q.life) { parts.splice(i, 1); continue; }
+    q.x += q.vx * dt; q.y += q.vy * dt; q.vy += 320 * dt;
+    ctx.globalAlpha = 1 - q.t / q.life;
+    ctx.fillStyle = q.color;
+    ctx.fillRect(q.x, q.y, q.s, q.s);
+    ctx.globalAlpha = 1;
+  }
+  ctx.textAlign = 'center';
+  for (let i = pops.length - 1; i >= 0; i--) {
+    const q = pops[i];
+    q.t += dt;
+    const p = q.t / q.dur;
+    if (p >= 1) { pops.splice(i, 1); continue; }
+    const rise = 26 * ease(p);
+    const sc = p < .15 ? .5 + .5 * (p / .15) : 1;
+    ctx.globalAlpha = p > .6 ? 1 - (p - .6) / .4 : 1;
+    ctx.fillStyle = q.color;
+    ctx.font = '800 ' + Math.round(q.size * sc) + 'px -apple-system, sans-serif';
+    ctx.shadowColor = 'rgba(0,0,0,.7)'; ctx.shadowBlur = 6;
+    ctx.fillText(q.text, q.x, q.y - rise);
+    ctx.shadowBlur = 0;
+    ctx.globalAlpha = 1;
+  }
+}
+
+// ---------- main loop ----------
+let lastT = performance.now();
+function frame(now) {
+  requestAnimationFrame(frame);
+  let dt = Math.min(0.1, (now - lastT) / 1000);
+  lastT = now;
+  if (freeze > 0) { freeze -= dt; dt = 0; }
+  pulse += dt;
+  if (lockFx) lockFx.t += dt;
+  shake = Math.max(0, shake - dt * 26);
+
+  // advance the fall
+  if (state === 'fall' && fall && dt > 0) {
+    fall.t += dt;
+    const p = clamp(fall.t / fall.dur, 0, 1);
+    const yp = fall.y0 + (fall.y1 - fall.y0) * p * p;
+    if (!fall.applied && yp + cur.h * cell >= gateY + gateH * .55) {
+      fall.applied = true;
+      const card = gates[fall.gate] ? CARDS[gates[fall.gate]] : null;
+      const x0 = boardX + fall.gate * GCOLS * cell;
+      const col = card ? card.tint : '#8c82b8';
+      fxs.push({ kind: 'flash', x: x0, y: gateY, w: GCOLS * cell, h: gateH, color: col, dur: .3, t: 0 });
+      burst(x0 + GCOLS * cell / 2, gateY + gateH / 2, col, 5);
+      if (card && card.mat) {
+        cur.mat = card.mat;
+        pop(x0 + GCOLS * cell / 2, gateY - 4, card.name + '!', 13, card.tint);
+      }
+    }
+    if (p >= 1) { state = 'lock'; resolveLock(); fall = null; }
+  }
+
+  // draw
+  ctx.clearRect(0, 0, W, H);
+  ctx.save();
+  if (shake > 0) ctx.translate((Math.random() - .5) * shake, (Math.random() - .5) * shake);
+  drawBG();
+  drawHoles();
+  drawGrid();
+  drawGates();
+  drawQueue();
+  if (state === 'aim') drawAim();
+  if (state === 'fall' && fall) drawFall();
+  drawFx(dt);
+  ctx.restore();
+}
+
+// ---------- boot: straight into gameplay ----------
+resize();
+startRound(1);
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>

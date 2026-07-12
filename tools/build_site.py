@@ -290,15 +290,20 @@ def chips(g):
 def build_index():
     cards = ""
     for g in GAMES:
+        try_btn = ""
+        if os.path.exists(f"{ROOT}/play/{g['slug']}.html"):
+            try_btn = f"""
+          <a class="try-btn" href="/play/{g['slug']}.html">\u25b6 Try it now!</a>"""
         cards += f"""
-      <a class="card" href="/games/{g['slug']}.html">
+      <div class="card">
+        <a class="card-hit" href="/games/{g['slug']}.html" aria-label="{esc(g['name'])}"></a>
         <div class="media-wrap">{media(g)}{badge(g)}</div>
         <div class="card-body">
           <h3>{esc(g['name'])}</h3>
           <p>{esc(g['one'])}</p>
-          {chips(g)}
+          {chips(g)}{try_btn}
         </div>
-      </a>"""
+      </div>"""
 
     body = f"""{nav()}
 <header class="hero">
@@ -360,6 +365,10 @@ def build_index():
 
 def build_game(g):
     label, _k = STATUS[g["status"]]
+    try_row = ""
+    if os.path.exists(f"{ROOT}/play/{g['slug']}.html"):
+        try_row = f"""<div class="try-row"><a class="btn" href="/play/{g['slug']}.html">\u25b6 Try it now \u2014 playable sneak peek</a></div>
+"""
     prose = "".join(f"\n      <p>{esc(p)}</p>" for p in g["desc"])
     shots = ""
     if g["shots"]:
@@ -387,7 +396,7 @@ def build_game(g):
   </div>
   <p class="tagline">{esc(g['tagline'])}</p>
   {chips(g)}
-
+  {try_row}
   <div class="prose">{prose}
   </div>
   {shots}

@@ -176,7 +176,8 @@ section { padding: 64px 0; }
   box-shadow: 0 14px 40px #000000cc, 0 0 0 1px #ffffff22;
   z-index: 1;
 }
-.media.pad { padding: 8%; }
+.media.pad { padding: 4%; }
+.media.pad .contain { max-width: 96%; max-height: 96%; }
 
 .badge {
   position: absolute; top: 12px; right: 12px; z-index: 2;

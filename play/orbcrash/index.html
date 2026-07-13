@@ -1,6 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
+<script>
+// visual-viewport shim: see tools/deploy_demo.py
+(function () {
+	var vv = window.visualViewport;
+	if (!vv) return;
+	var ow = Object.getOwnPropertyDescriptor(window, 'innerWidth')  || Object.getOwnPropertyDescriptor(Window.prototype, 'innerWidth');
+	var oh = Object.getOwnPropertyDescriptor(window, 'innerHeight') || Object.getOwnPropertyDescriptor(Window.prototype, 'innerHeight');
+	try {
+		Object.defineProperty(window, 'innerWidth',  { get: function () { return (vv.width  > 0) ? Math.round(vv.width)  : ow.get.call(window); } });
+		Object.defineProperty(window, 'innerHeight', { get: function () { return (vv.height > 0) ? Math.round(vv.height) : oh.get.call(window); } });
+	} catch (e) {}
+	var relay = function () { window.dispatchEvent(new Event('resize')); };
+	vv.addEventListener('resize', relay);
+	vv.addEventListener('scroll', relay);
+	[400, 1200, 2500].forEach(function (t) { setTimeout(relay, t); });
+})();
+</script>
+
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0">
 		<title>Orbcrash</title>

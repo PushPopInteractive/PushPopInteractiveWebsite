@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Deploy a Godot web-demo export into play/<slug>/ with cache-proof names.
 
-Usage: python3 tools/deploy_demo.py <slug> <export_dir>
+Usage: python3 tools/deploy_demo.py <slug> <export_dir> [--landscape]
   e.g. python3 tools/deploy_demo.py orbcrash /Users/openclaw/Orbcrash/build/web_demo
+  --landscape: skip the phone-column width cap (game fills the window)
 
 - Renames every file to <slug>-<pck-sha8>.* (index.html keeps its name) and
   rewrites all references, so browsers/CDNs can never serve a stale mix.
@@ -23,7 +24,8 @@ SHIM = """<script>
 	var realW = function () { return (vv.width  > 0) ? Math.round(vv.width)  : ow.get.call(window); };
 	var realH = function () { return (vv.height > 0) ? Math.round(vv.height) : oh.get.call(window); };
 	// portrait game: on wide windows, cap the canvas to a centered ~19:9 phone column
-	var capW  = function () { return Math.min(realW(), Math.round(realH() * 0.475)); };
+	var PORTRAIT = __PORTRAIT__;
+	var capW  = function () { return PORTRAIT ? Math.min(realW(), Math.round(realH() * 0.475)) : realW(); };
 	try {
 		Object.defineProperty(window, 'innerWidth',  { get: capW });
 		Object.defineProperty(window, 'innerHeight', { get: realH });
@@ -41,6 +43,7 @@ SHIM = """<script>
 
 def main():
     slug, src = sys.argv[1], sys.argv[2]
+    portrait = "--landscape" not in sys.argv[3:]
     root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     dst = os.path.join(root, "play", slug)
     os.makedirs(dst, exist_ok=True)
@@ -61,7 +64,8 @@ def main():
     html = html.replace('"executable":"index"', f'"executable":"{base}"')
     html = html.replace("'executable':'index'", f"'executable':'{base}'")
     assert "<head>" in html
-    html = html.replace("<head>", "<head>\n" + SHIM, 1)
+    shim = SHIM.replace("__PORTRAIT__", "true" if portrait else "false")
+    html = html.replace("<head>", "<head>\n" + shim, 1)
     open(f"{dst}/index.html", "w").write(html)
     print(f"deployed {slug} as {base} (shim injected)")
 

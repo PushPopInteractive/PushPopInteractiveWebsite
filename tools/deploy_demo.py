@@ -20,10 +20,17 @@ SHIM = """<script>
 	if (!vv) return;
 	var ow = Object.getOwnPropertyDescriptor(window, 'innerWidth')  || Object.getOwnPropertyDescriptor(Window.prototype, 'innerWidth');
 	var oh = Object.getOwnPropertyDescriptor(window, 'innerHeight') || Object.getOwnPropertyDescriptor(Window.prototype, 'innerHeight');
+	var realW = function () { return (vv.width  > 0) ? Math.round(vv.width)  : ow.get.call(window); };
+	var realH = function () { return (vv.height > 0) ? Math.round(vv.height) : oh.get.call(window); };
+	// portrait game: on wide windows, cap the canvas to a centered ~19:9 phone column
+	var capW  = function () { return Math.min(realW(), Math.round(realH() * 0.475)); };
 	try {
-		Object.defineProperty(window, 'innerWidth',  { get: function () { return (vv.width  > 0) ? Math.round(vv.width)  : ow.get.call(window); } });
-		Object.defineProperty(window, 'innerHeight', { get: function () { return (vv.height > 0) ? Math.round(vv.height) : oh.get.call(window); } });
+		Object.defineProperty(window, 'innerWidth',  { get: capW });
+		Object.defineProperty(window, 'innerHeight', { get: realH });
 	} catch (e) {}
+	var style = document.createElement('style');
+	style.textContent = 'body{display:flex;justify-content:center;align-items:flex-start;background:#0a0a14;}#canvas{margin:0 auto;}';
+	document.addEventListener('DOMContentLoaded', function () { document.head.appendChild(style); });
 	var relay = function () { window.dispatchEvent(new Event('resize')); };
 	vv.addEventListener('resize', relay);
 	vv.addEventListener('scroll', relay);

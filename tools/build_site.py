@@ -347,7 +347,7 @@ def build_index():
 </header>
 
 <section id="games">
-  <div class="wrap">
+  <div class="wrap wide">
     <p class="eyebrow">The catalog</p>
     <h2 class="section-title">{len(GAMES)} games &amp; counting</h2>
     <p class="section-sub">Everything below is headed to the App Store. Some are nearly there, some are still in the oven — all of them are being made with far too much care.</p>

@@ -307,9 +307,13 @@ def build_index():
         shots = discovered_shots(g["slug"])[:3]
         shots_row = ""
         if len(shots) >= 2:
+            from PIL import Image
+            with Image.open(f"{ROOT}/assets/games/{g['slug']}/{shots[0]}") as im:
+                landscape = im.width > im.height
+            cls = "card-shots landscape" if landscape else "card-shots"
             imgs = "".join(f'<img src="/assets/games/{g["slug"]}/{s}" alt="" loading="lazy">' for s in shots)
             shots_row = f"""
-          <div class="card-shots">{imgs}</div>"""
+          <div class="{cls}">{imgs}</div>"""
         cards += f"""
       <div class="card">
         <a class="card-hit" href="/games/{g['slug']}.html" aria-label="{esc(g['name'])}"></a>

@@ -219,6 +219,8 @@ section { padding: 64px 0; }
   border-radius: 10px; border: 1px solid var(--line);
   background: #0d0d18;
 }
+/* landscape-screenshot games (e.g. tabletop battlers) get wide thumbs */
+.card-shots.landscape img { aspect-ratio: 16 / 10; object-position: center; }
 
 .chips { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 2px; }
 .chips span {

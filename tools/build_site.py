@@ -195,6 +195,13 @@ STATUS = {
     "dev": ("In Development", "dev"),
 }
 
+def discovered_shots(slug):
+    """shot-*.jpg/png files in the game's asset folder, sorted by name."""
+    import glob
+    d = f"{ROOT}/assets/games/{slug}"
+    return sorted(os.path.basename(p) for p in glob.glob(f"{d}/shot-*.jpg") + glob.glob(f"{d}/shot-*.png"))
+
+
 def esc(s):
     return html.escape(s, quote=True)
 
@@ -297,13 +304,19 @@ def build_index():
         elif os.path.exists(f"{ROOT}/play/{g['slug']}.html"):
             try_btn = f"""
           <a class="try-btn" href="/play/{g['slug']}.html">\u25b6 Try it now!</a>"""
+        shots = discovered_shots(g["slug"])[:3]
+        shots_row = ""
+        if len(shots) >= 2:
+            imgs = "".join(f'<img src="/assets/games/{g["slug"]}/{s}" alt="" loading="lazy">' for s in shots)
+            shots_row = f"""
+          <div class="card-shots">{imgs}</div>"""
         cards += f"""
       <div class="card">
         <a class="card-hit" href="/games/{g['slug']}.html" aria-label="{esc(g['name'])}"></a>
         <div class="media-wrap">{media(g)}{badge(g)}</div>
         <div class="card-body">
           <h3>{esc(g['name'])}</h3>
-          <p>{esc(g['one'])}</p>
+          <p>{esc(g['one'])}</p>{shots_row}
           {chips(g)}{try_btn}
         </div>
       </div>"""
@@ -376,6 +389,8 @@ def build_game(g):
         try_row = f"""<div class="try-row"><a class="btn" href="/play/{g['slug']}.html">\u25b6 Try it now \u2014 playable sneak peek</a></div>
 """
     prose = "".join(f"\n      <p>{esc(p)}</p>" for p in g["desc"])
+    page_shots = discovered_shots(g["slug"]) or g["shots"]
+    g = dict(g, shots=page_shots)
     shots = ""
     if g["shots"]:
         imgs = "".join(

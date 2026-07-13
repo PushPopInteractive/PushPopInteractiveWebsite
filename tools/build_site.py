@@ -294,9 +294,16 @@ def chips(g):
 
 # ---------- index ----------
 
+def has_demo(slug):
+    return (os.path.exists(f"{ROOT}/play/{slug}/index.html")
+            or os.path.exists(f"{ROOT}/play/{slug}.html"))
+
+
 def build_index():
     cards = ""
-    for g in GAMES:
+    # playable games first (stable: curated order preserved within each group)
+    ordered = [g for g in GAMES if has_demo(g["slug"])] + [g for g in GAMES if not has_demo(g["slug"])]
+    for g in ordered:
         try_btn = ""
         if os.path.exists(f"{ROOT}/play/{g['slug']}/index.html"):
             try_btn = f"""

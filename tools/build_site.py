@@ -268,7 +268,7 @@ def footer():
       <a href="/privacy.html">Privacy</a> ·
       <a href="mailto:{EMAIL}">Contact</a>
     </div>
-    <div class="fine">© 2026 PushPop Interactive. All rights reserved.<br>All games designed &amp; built by one very caffeinated human.</div>
+    <div class="fine">© 2026 PushPop Interactive. All rights reserved.<br>All games designed &amp; built in-house.</div>
   </div>
 </footer>
 </body>
@@ -345,8 +345,8 @@ def build_index():
 <header class="hero">
   <div class="hero-inner">
     <img class="hero-logo" src="/assets/pushpop_logo.png" alt="PushPop Interactive" width="360">
-    <h1>Juicy little games,<br><span class="grad">made by one human.</span></h1>
-    <p class="sub">PushPop Interactive is a one-person indie studio making bright, tactile,
+    <h1>Juicy little games,<br><span class="grad">made with far too much care.</span></h1>
+    <p class="sub">PushPop Interactive is an indie game studio making bright, tactile,
     delightfully juicy games for iPhone and iPad. No ads. No accounts. No nonsense — just games.</p>
     <div class="hero-cta">
       <a class="btn" href="#games">Browse the games</a>
@@ -370,9 +370,10 @@ def build_index():
     <p class="eyebrow">The studio</p>
     <h2 class="section-title">Small studio. Big juice.</h2>
     <div class="about-card">
-      <p>PushPop Interactive is what happens when one person refuses to stop making games.
-      Every title on this page — the design, the code, the art direction, the sound of an orb
-      going <em>splorch</em> — comes from a single very stubborn, very caffeinated human.</p>
+      <p>PushPop Interactive is an indie studio with a stubborn streak. Every title on this
+      page — the design, the code, the art direction, the sound of an orb going
+      <em>splorch</em> — is made in-house, and fussed over far longer than anyone would call
+      reasonable.</p>
       <p>The house style: games that feel <strong>tactile</strong> and <strong>generous</strong>.
       Screens you want to touch, systems that reward one more run, and zero of the stuff that
       makes mobile games feel gross. Our games ship with <strong>no ads, no accounts, and no
@@ -393,7 +394,7 @@ def build_index():
 {footer()}"""
     return head(
         "PushPop Interactive — Juicy indie games for iPhone & iPad",
-        "PushPop Interactive is a one-person indie studio making bright, tactile, delightfully juicy games for iOS — including Orbcrash, Squishfall, Kingdom Blackjack, and more.",
+        "PushPop Interactive is an indie game studio making bright, tactile, delightfully juicy games for iOS — including Orbcrash, Squishfall, Kingdom Blackjack, and more.",
         f"{SITE}/", f"{SITE}/assets/pushpop_logo.png",
     ) + body
 
@@ -471,7 +472,7 @@ def build_support():
 <div class="wrap page">
   <p class="eyebrow">PushPop Interactive</p>
   <h1>Support</h1>
-  <p class="updated">We're a one-person studio and we read every message.</p>
+  <p class="updated">We're a small studio and we read every message.</p>
 
   <div class="content-card">
     <h2>Get in touch</h2>

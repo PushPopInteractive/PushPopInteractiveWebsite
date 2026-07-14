@@ -96,10 +96,10 @@ GAMES = [
         slug="spite-and-steel", name="Spite & Steel", status="dev",
         media="cover",
         tagline="Every wound feeds the grudge.",
-        one="A two-player fantasy card battler of gold, mana, lanes — and Spite that grows when your commander bleeds.",
-        tags=["Card Battler", "Two Player", "Fantasy"],
+        one="A fantasy card battler of gold, mana, and lanes — with Spite that grows when your commander bleeds.",
+        tags=["Card Battler", "Duel vs AI", "Fantasy"],
         desc=[
-            "Spite & Steel is a two-player fantasy card battler. Two commanders recruit allies, stockpile gold, channel fleeting mana, and position their forces between front and rear lanes.",
+            "Spite & Steel is a fantasy card battler fought as a duel of commanders. You and your opponent recruit allies, stockpile gold, channel fleeting mana, and position your forces between front and rear lanes.",
             "And then there's Spite — a grudge that only grows when the enemy draws your commander's blood. Nurse it well and it repays every drop.",
         ],
         shots=[],

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """One-shot generator for the PushPop Interactive site."""
-import os, html
+import os, html, hashlib
 
 ROOT = "/Users/openclaw/PushpopInteractiveWebsite"
 SITE = "https://pushpopgames.com"
@@ -205,7 +205,14 @@ def discovered_shots(slug):
 def esc(s):
     return html.escape(s, quote=True)
 
+
+def asset_version(path):
+    """Short content hash so browsers immediately pick up regenerated assets."""
+    with open(path, "rb") as f:
+        return hashlib.sha256(f.read()).hexdigest()[:10]
+
 def head(title, desc, canon, og_image, css_prefix=""):
+    style_version = asset_version(f"{ROOT}/style.css")
     return f"""<!doctype html>
 <html lang="en">
 <head>
@@ -225,7 +232,7 @@ def head(title, desc, canon, og_image, css_prefix=""):
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/style.css">
+<link rel="stylesheet" href="/style.css?v={style_version}">
 </head>
 <body>
 """

@@ -216,12 +216,30 @@ section { padding: 64px 0; }
 .card-shots { display: flex; gap: 7px; margin: 4px 0 2px; }
 .card-shots img {
   width: calc((100% - 14px) / 3);
-  aspect-ratio: 9 / 12; object-fit: cover; object-position: center;
+  aspect-ratio: 9 / 12; object-fit: cover; object-position: left top;
   border-radius: 10px; border: 1px solid var(--line);
   background: #0d0d18;
 }
-/* landscape-screenshot games (e.g. tabletop battlers) get wide thumbs */
-.card-shots.landscape img { aspect-ratio: 16 / 10; object-position: center; }
+/* Landscape screenshots form a compact deck instead of three tiny strips. */
+.card-shots.landscape {
+  display: grid;
+  padding: 0 32px 32px 0;
+}
+.card-shots.landscape img {
+  grid-area: 1 / 1;
+  width: calc(100% - 32px);
+  aspect-ratio: 956 / 440;
+  object-fit: cover;
+  object-position: left top;
+  box-shadow: 0 8px 22px #00000070;
+  transition: transform .2s ease;
+}
+.card-shots.landscape img:nth-child(1) { z-index: 3; }
+.card-shots.landscape img:nth-child(2) { z-index: 2; transform: translate(16px, 16px); }
+.card-shots.landscape img:nth-child(3) { z-index: 1; transform: translate(32px, 32px); }
+.card:hover .card-shots.landscape img:nth-child(1) { transform: translateY(-2px); }
+.card:hover .card-shots.landscape img:nth-child(2) { transform: translate(18px, 18px); }
+.card:hover .card-shots.landscape img:nth-child(3) { transform: translate(36px, 36px); }
 
 .chips { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 2px; }
 .chips span {

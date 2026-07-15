@@ -1,13 +1,15 @@
 # iPhone install framework
 
-Private, over-the-air install links for PushPop games. Dev-signed builds — they
-install only on iPhones registered to the developer profile (team `P725B32RWV`).
-Not linked from the public site; reach them at:
+Private, over-the-air install links for PushPop games. Dev-signed builds — one
+link per game installs/updates on EVERY iPhone registered in the signing profile
+(team `P725B32RWV`). Not linked from the public site; reach it at:
 
-- **My iPhone (16 Pro Max):** https://pushpopgames.com/install/
-- **KC Phone:** https://pushpopgames.com/install/kc/
+- **https://pushpopgames.com/install/**
 
-Open in **Safari** on the phone and tap a game to install/update it.
+Open in **Safari** on any registered phone and tap a game to install/update it.
+A phone that isn't in the profile can't install — add its UDID to the profile
+(or, for a device on a different Apple ID, give it its own audience with a
+`tag_suffix` in `audiences.json` and a separately-signed build).
 
 ## Publish or update ONE game
 

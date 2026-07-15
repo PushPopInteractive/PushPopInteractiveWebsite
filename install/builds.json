@@ -12,6 +12,13 @@
     "tag": "looseleaf-hotfix-04e7785b",
     "version": "0.1.0"
   },
+  "orbcrash": {
+    "bundle": "com.pushpopinteractive.orbcrash",
+    "display": "Orbcrash",
+    "ipa": "orbcrash.ipa",
+    "tag": "install-orbcrash",
+    "version": "$(MARKETING_VERSION)"
+  },
   "spellbash": {
     "bundle": "com.pushpopinteractive.spellbash",
     "display": "Spellbash",

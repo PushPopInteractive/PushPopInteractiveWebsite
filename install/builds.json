@@ -1,0 +1,16 @@
+{
+  "looseleaf-labyrinth": {
+    "display": "Looseleaf Labyrinth",
+    "bundle": "com.pushpopinteractive.looseleaflabyrinth",
+    "version": "0.1.0",
+    "ipa": "LooseleafLabyrinth.ipa",
+    "tag": "looseleaf-hotfix-04e7785b"
+  },
+  "spite-and-steel": {
+    "display": "Spite & Steel",
+    "bundle": "com.pushpop.spiteandsteel",
+    "version": "1.0",
+    "ipa": "SpiteAndSteel.ipa",
+    "tag": "spite-steel-hotfix-0a60e706"
+  }
+}

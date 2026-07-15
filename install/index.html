@@ -18,24 +18,34 @@
   a.row:active{background:#ffffff12}
   a.row img{width:52px;height:52px;border-radius:12px}
   .name{font-weight:700;flex:1}
-  .ver{opacity:.5;font-size:.8rem}
+  .tap{font-weight:800;font-size:.85rem;color:#ffb43c}
   .empty{opacity:.6;font-size:.95rem;padding:2rem 0}
+  .warn{margin:0 0 1.2rem;padding:.8rem 1rem;border-radius:12px;background:#3a2a12;
+        border:1px solid #7a5a1e;color:#ffd591;font-size:.88rem;line-height:1.4;display:none}
+  .warn.show{display:block}
 </style></head><body>
 <div class="wrap">
   <div class="aud">PushPop iPhone builds</div>
   <h1>PushPop — iPhone builds</h1>
-  <p class="sub">Private install links. Open in <b>Safari</b> and tap a game to install or update it. Not for public distribution.</p>
+  <p class="sub">Private install links. Tap a game to install or update it. Not for public distribution.</p>
+  <div id="notsafari" class="warn">⚠️ iPhone install links only work in <b>Safari</b>.
+    Copy this page's link, open <b>Safari</b>, paste it, and tap there.</div>
   
   
-    <a class="row" href="/install/looseleaf-labyrinth/">
+    <a class="row" href="itms-services://?action=download-manifest&amp;url=https://github.com/PushPopInteractive/PushPopInteractiveWebsite/releases/download/looseleaf-hotfix-04e7785b/manifest.plist">
       <img src="/assets/games/looseleaf-labyrinth/icon.png" alt="">
       <span class="name">Looseleaf Labyrinth</span>
-      <span class="ver">v0.1.0</span>
+      <span class="tap">Install ›</span>
     </a>
-    <a class="row" href="/install/spite-and-steel/">
+    <a class="row" href="itms-services://?action=download-manifest&amp;url=https://github.com/PushPopInteractive/PushPopInteractiveWebsite/releases/download/spite-steel-hotfix-0a60e706/manifest.plist">
       <img src="/assets/games/spite-and-steel/icon.png" alt="">
       <span class="name">Spite &amp; Steel</span>
-      <span class="ver">v1.0</span>
+      <span class="tap">Install ›</span>
     </a>
 </div>
+<script>
+  var ua = navigator.userAgent;
+  var isSafari = /Safari/.test(ua) && !/CriOS|FxiOS|EdgiOS|Brave|Chrome|OPT\//.test(ua) && !navigator.brave;
+  if (!isSafari) document.getElementById('notsafari').classList.add('show');
+</script>
 </body></html>

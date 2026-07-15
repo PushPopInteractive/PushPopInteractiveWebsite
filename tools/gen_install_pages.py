@@ -86,15 +86,17 @@ def game_page(slug, b, aud):
 
 
 def index_page(builds, aud, audiences):
-    base = f"/install/{aud['folder']}/".replace("//", "/")
     rows = ""
     for slug in sorted(builds, key=lambda s: builds[s]["display"].lower()):
         b = builds[slug]
+        tag = b.get("tag", f"install-{slug}") + aud.get("tag_suffix", "")
+        manifest = f"https://github.com/{REPO}/releases/download/{tag}/manifest.plist"
+        itms = f"itms-services://?action=download-manifest&amp;url={manifest}"
         rows += f"""
-    <a class="row" href="{base}{esc(slug)}/">
+    <a class="row" href="{itms}">
       <img src="/assets/games/{esc(slug)}/icon.png" alt="">
       <span class="name">{esc(b['display'])}</span>
-      <span class="ver">v{esc(b.get('version','0.1.0'))}</span>
+      <span class="tap">Install ›</span>
     </a>"""
     # links to the other phones' indexes
     switch = ""
@@ -124,16 +126,26 @@ def index_page(builds, aud, audiences):
   a.row:active{{background:#ffffff12}}
   a.row img{{width:52px;height:52px;border-radius:12px}}
   .name{{font-weight:700;flex:1}}
-  .ver{{opacity:.5;font-size:.8rem}}
+  .tap{{font-weight:800;font-size:.85rem;color:#ffb43c}}
   .empty{{opacity:.6;font-size:.95rem;padding:2rem 0}}
+  .warn{{margin:0 0 1.2rem;padding:.8rem 1rem;border-radius:12px;background:#3a2a12;
+        border:1px solid #7a5a1e;color:#ffd591;font-size:.88rem;line-height:1.4;display:none}}
+  .warn.show{{display:block}}
 </style></head><body>
 <div class="wrap">
   <div class="aud">{esc(aud['label'])}</div>
   <h1>PushPop — iPhone builds</h1>
-  <p class="sub">Private install links. Open in <b>Safari</b> and tap a game to install or update it. Not for public distribution.</p>
+  <p class="sub">Private install links. Tap a game to install or update it. Not for public distribution.</p>
+  <div id="notsafari" class="warn">⚠️ iPhone install links only work in <b>Safari</b>.
+    Copy this page's link, open <b>Safari</b>, paste it, and tap there.</div>
   {switch}
   {rows if rows else '<div class="empty">No builds published yet. Run tools/build_ios_install.sh for a game.</div>'}
 </div>
+<script>
+  var ua = navigator.userAgent;
+  var isSafari = /Safari/.test(ua) && !/CriOS|FxiOS|EdgiOS|Brave|Chrome|OPT\\//.test(ua) && !navigator.brave;
+  if (!isSafari) document.getElementById('notsafari').classList.add('show');
+</script>
 </body></html>
 """
 

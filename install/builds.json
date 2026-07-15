@@ -1,16 +1,28 @@
 {
+  "local-myth": {
+    "bundle": "com.pushpopinteractive.localmyth",
+    "display": "Local Myth",
+    "manifest_url": "https://github.com/PushPopInteractive/localmyth-builds/releases/download/latest/manifest.plist",
+    "version": "latest"
+  },
   "looseleaf-labyrinth": {
-    "display": "Looseleaf Labyrinth",
     "bundle": "com.pushpopinteractive.looseleaflabyrinth",
-    "version": "0.1.0",
+    "display": "Looseleaf Labyrinth",
     "ipa": "LooseleafLabyrinth.ipa",
-    "tag": "looseleaf-hotfix-04e7785b"
+    "tag": "looseleaf-hotfix-04e7785b",
+    "version": "0.1.0"
+  },
+  "spellbash": {
+    "bundle": "com.pushpopinteractive.spellbash",
+    "display": "Spellbash",
+    "manifest_url": "https://github.com/PushPopInteractive/spellbash-builds/releases/download/latest/manifest.plist",
+    "version": "latest"
   },
   "spite-and-steel": {
-    "display": "Spite & Steel",
     "bundle": "com.pushpop.spiteandsteel",
-    "version": "1.0",
+    "display": "Spite & Steel",
     "ipa": "SpiteAndSteel.ipa",
-    "tag": "spite-steel-hotfix-0a60e706"
+    "tag": "spite-steel-hotfix-0a60e706",
+    "version": "1.0"
   }
 }

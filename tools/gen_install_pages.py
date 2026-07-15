@@ -38,9 +38,7 @@ def rel_prefix(folder):
 
 
 def game_page(slug, b, aud):
-    tag = b.get("tag", f"install-{slug}") + aud.get("tag_suffix", "")
-    base = f"https://github.com/{REPO}/releases/download/{tag}"
-    manifest = f"{base}/manifest.plist"
+    manifest = b.get("manifest_url") or f"https://github.com/{REPO}/releases/download/{b.get('tag', 'install-'+slug) + aud.get('tag_suffix', '')}/manifest.plist"
     itms = f"itms-services://?action=download-manifest&amp;url={manifest}"
     home = f"/install/{aud['folder']}/".replace("//", "/")
     return f"""<!doctype html>
@@ -89,8 +87,7 @@ def index_page(builds, aud, audiences):
     rows = ""
     for slug in sorted(builds, key=lambda s: builds[s]["display"].lower()):
         b = builds[slug]
-        tag = b.get("tag", f"install-{slug}") + aud.get("tag_suffix", "")
-        manifest = f"https://github.com/{REPO}/releases/download/{tag}/manifest.plist"
+        manifest = b.get("manifest_url") or f"https://github.com/{REPO}/releases/download/{b.get('tag', 'install-'+slug) + aud.get('tag_suffix', '')}/manifest.plist"
         itms = f"itms-services://?action=download-manifest&amp;url={manifest}"
         rows += f"""
     <a class="row" href="{itms}">

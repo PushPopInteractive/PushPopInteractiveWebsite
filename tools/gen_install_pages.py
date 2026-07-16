@@ -161,13 +161,7 @@ def main():
         os.makedirs(adir, exist_ok=True)
         with open(os.path.join(adir, "index.html"), "w") as f:
             f.write(index_page(builds, aud, audiences))
-        for slug, b in builds.items():
-            gdir = os.path.join(adir, slug)
-            os.makedirs(gdir, exist_ok=True)
-            with open(os.path.join(gdir, "index.html"), "w") as f:
-                f.write(game_page(slug, b, aud))
-            total += 1
-    print(f"wrote {len(audiences)} audience index(es) + {total} game page(s)")
+    print(f"wrote {len(audiences)} audience index(es) (install links live on the index; no per-game pages)")
 
 
 if __name__ == "__main__":

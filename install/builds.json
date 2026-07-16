@@ -1,4 +1,25 @@
 {
+  "gatefall": {
+    "bundle": "com.pushpopinteractive.gatefall",
+    "display": "GateFall",
+    "ipa": "gatefall.ipa",
+    "tag": "install-gatefall",
+    "version": "0.1"
+  },
+  "kingdom-blackjack": {
+    "bundle": "com.pushpopinteractive.kingdomblackjack",
+    "display": "Kingdom Blackjack",
+    "ipa": "kingdom-blackjack.ipa",
+    "tag": "install-kingdom-blackjack",
+    "version": "1.0"
+  },
+  "kingdom-sweeper": {
+    "bundle": "com.pushpopinteractive.kingdomsweeper",
+    "display": "Kingdom Sweeper",
+    "ipa": "KingdomSweeper.ipa",
+    "tag": "install-kingdom-sweeper",
+    "version": "0.1"
+  },
   "local-myth": {
     "bundle": "com.pushpopinteractive.localmyth",
     "display": "Local Myth",
@@ -19,11 +40,32 @@
     "tag": "install-orbcrash",
     "version": "$(MARKETING_VERSION)"
   },
+  "rats": {
+    "bundle": "com.pushpopinteractive.rats",
+    "display": "R.A.T.S.",
+    "ipa": "rats.ipa",
+    "tag": "install-rats",
+    "version": "1.0"
+  },
+  "shorewood-days": {
+    "bundle": "com.pushpopinteractive.shorewooddays",
+    "display": "Shorewood Days",
+    "ipa": "ShorewoodDays.ipa",
+    "tag": "install-shorewood-days",
+    "version": "0.2"
+  },
   "spellbash": {
     "bundle": "com.pushpopinteractive.spellbash",
     "display": "Spellbash",
     "manifest_url": "https://github.com/PushPopInteractive/spellbash-builds/releases/download/latest/manifest.plist",
     "version": "latest"
+  },
+  "spellbash-td": {
+    "bundle": "com.pushpopinteractive.spellbashtd",
+    "display": "Spellbash TD",
+    "ipa": "spellbash-td.ipa",
+    "tag": "install-spellbash-td",
+    "version": "0.1.0"
   },
   "spite-and-steel": {
     "bundle": "com.pushpop.spiteandsteel",
@@ -31,5 +73,33 @@
     "ipa": "SpiteAndSteel.ipa",
     "tag": "spite-steel-hotfix-0a60e706",
     "version": "1.0"
+  },
+  "squishfall": {
+    "bundle": "com.pushpopinteractive.squishfall",
+    "display": "Squishfall",
+    "ipa": "squishfall.ipa",
+    "tag": "install-squishfall",
+    "version": "1.0"
+  },
+  "unearth": {
+    "bundle": "com.openclaw.unearth",
+    "display": "Unearth",
+    "ipa": "Unearth.ipa",
+    "tag": "install-unearth",
+    "version": "0.1"
+  },
+  "yahiko-no": {
+    "bundle": "com.pushpopinteractive.yahikono",
+    "display": "Yahiko, NO!",
+    "ipa": "YahikoNO.ipa",
+    "tag": "install-yahiko-no",
+    "version": "0.1"
+  },
+  "you-cannot-go-back": {
+    "bundle": "com.pushpopinteractive.youcannotgoback",
+    "display": "You Cannot Go Back",
+    "ipa": "YouCannotGoBack.ipa",
+    "tag": "install-you-cannot-go-back",
+    "version": "0.1"
   }
 }

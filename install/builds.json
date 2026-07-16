@@ -82,7 +82,7 @@
     "version": "1.0"
   },
   "unearth": {
-    "bundle": "com.openclaw.unearth",
+    "bundle": "com.pushpopinteractive.unearth",
     "display": "Unearth",
     "ipa": "Unearth.ipa",
     "tag": "install-unearth",

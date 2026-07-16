@@ -50,7 +50,12 @@ XCPROJ="$(ls -d "$XCPROJ_DIR"/*.xcodeproj 2>/dev/null | head -1)"
 if [[ -z "$XCPROJ" || ! -d "$XCPROJ" ]]; then
   echo "!! No .xcodeproj produced. Last export log lines:"; tail -25 "$WORK/export.log"; exit 1
 fi
-[[ -z "$SCHEME" ]] && SCHEME="$(basename "$XCPROJ" .xcodeproj)"
+# Godot names the scheme after the lowercased project, not the .xcodeproj file —
+# ask xcodebuild for the real scheme rather than assuming.
+if [[ -z "$SCHEME" ]]; then
+  SCHEME="$(xcodebuild -list -project "$XCPROJ" -json 2>/dev/null | python3 -c 'import json,sys; d=json.load(sys.stdin); print((d["project"]["schemes"] or [""])[0])' 2>/dev/null)"
+  [[ -z "$SCHEME" ]] && SCHEME="$(basename "$XCPROJ" .xcodeproj)"
+fi
 echo "    project: $XCPROJ  (scheme: $SCHEME)"
 
 # Free rotation: Godot 4.6 writes one fixed orientation and often gets it wrong.
@@ -68,6 +73,7 @@ echo "==> [2/5] Archive + export signed .ipa (team $TEAM)"
 # fails with "No Accounts"). Same signing path the other Pushpop apps ship with.
 xcodebuild -project "$XCPROJ" -scheme "$SCHEME" -configuration Debug \
   -sdk iphoneos -archivePath "$WORK/$SLUG.xcarchive" -derivedDataPath "$DD" \
+  -allowProvisioningUpdates \
   DEVELOPMENT_TEAM="$TEAM" CODE_SIGN_STYLE=Automatic PRODUCT_BUNDLE_IDENTIFIER="$BUNDLE" \
   archive 2>&1 | grep -viE "^ *ld: warning|ignoring file|auto-linked|implicit file" | tail -12
 if [[ ! -d "$WORK/$SLUG.xcarchive" ]]; then
@@ -81,7 +87,6 @@ cat > "$WORK/ExportOptions.plist" <<PLISTEOF
   <key>method</key><string>development</string>
   <key>teamID</key><string>$TEAM</string>
   <key>signingStyle</key><string>automatic</string>
-  <key>thinning</key><string>none</string>
   <key>compileBitcode</key><false/>
   <key>stripSwiftSymbols</key><true/>
 </dict></plist>
@@ -97,7 +102,14 @@ IPANAME="$(basename "$IPA")"
 echo "    ipa: $IPA ($(du -h "$IPA" | cut -f1))"
 
 echo "==> [3/5] Version + icon"
-VERSION="$(/usr/bin/plutil -extract CFBundleShortVersionString raw -o - "$PLIST" 2>/dev/null || echo 0.1.0)"
+VERSION="$(/usr/bin/plutil -extract CFBundleShortVersionString raw -o - "$PLIST" 2>/dev/null || echo '')"
+# Godot writes the Xcode var $(MARKETING_VERSION) into Info.plist; resolve the
+# real number from the export preset instead of shipping the literal placeholder.
+if [[ -z "$VERSION" || "$VERSION" == *'$('* ]]; then
+  VERSION="$(grep -E '^application/short_version=' "$PROJDIR/export_presets.cfg" 2>/dev/null | head -1 | sed -E 's/.*"([^"]*)".*/\1/')"
+  [[ -z "$VERSION" ]] && VERSION="0.1.0"
+fi
+echo "    version: $VERSION"
 ICON="$WEBROOT/assets/games/$SLUG/icon.png"      # the web icon we already ship
 if [[ ! -f "$ICON" ]]; then
   # fall back to the largest icon inside the built app

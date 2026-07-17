@@ -30,7 +30,7 @@
     "bundle": "com.pushpopinteractive.looseleaflabyrinth",
     "display": "Looseleaf Labyrinth",
     "ipa": "LooseleafLabyrinth.ipa",
-    "tag": "looseleaf-hotfix-04e7785b",
+    "tag": "install-looseleaf-labyrinth",
     "version": "0.1.0"
   },
   "neonomaly": {
@@ -45,7 +45,7 @@
     "display": "Orbcrash",
     "ipa": "orbcrash.ipa",
     "tag": "install-orbcrash",
-    "version": "$(MARKETING_VERSION)"
+    "version": "1.1"
   },
   "rats": {
     "bundle": "com.pushpopinteractive.rats",
@@ -62,10 +62,11 @@
     "version": "0.2"
   },
   "spellbash": {
-    "bundle": "com.pushpopinteractive.spellbash",
+    "bundle": "com.openclaw.Spellbash",
     "display": "Spellbash",
-    "manifest_url": "https://github.com/PushPopInteractive/spellbash-builds/releases/download/latest/manifest.plist",
-    "version": "latest"
+    "ipa": "spellbash.ipa",
+    "tag": "install-spellbash",
+    "version": "0.1"
   },
   "spellbash-td": {
     "bundle": "com.pushpopinteractive.spellbashtd",
@@ -78,7 +79,7 @@
     "bundle": "com.pushpop.spiteandsteel",
     "display": "Spite & Steel",
     "ipa": "SpiteAndSteel.ipa",
-    "tag": "spite-steel-hotfix-0a60e706",
+    "tag": "install-spite-and-steel",
     "version": "1.0"
   },
   "squishfall": {

@@ -81,6 +81,13 @@
     "tag": "install-squishfall",
     "version": "1.0"
   },
+  "toolchest": {
+    "bundle": "com.pushpopinteractive.ToolChest",
+    "display": "ToolChest",
+    "ipa": "ToolChest.ipa",
+    "tag": "install-toolchest",
+    "version": "1.0"
+  },
   "unearth": {
     "bundle": "com.pushpopinteractive.unearth",
     "display": "Unearth",

@@ -62,7 +62,7 @@
     "version": "0.2"
   },
   "spellbash": {
-    "bundle": "com.openclaw.Spellbash",
+    "bundle": "com.pushpopinteractive.spellbash",
     "display": "Spellbash",
     "ipa": "spellbash.ipa",
     "tag": "install-spellbash",
@@ -76,7 +76,7 @@
     "version": "0.1.0"
   },
   "spite-and-steel": {
-    "bundle": "com.pushpop.spiteandsteel",
+    "bundle": "com.pushpopinteractive.spiteandsteel",
     "display": "Spite & Steel",
     "ipa": "SpiteAndSteel.ipa",
     "tag": "install-spite-and-steel",

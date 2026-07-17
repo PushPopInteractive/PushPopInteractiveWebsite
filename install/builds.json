@@ -33,6 +33,13 @@
     "tag": "looseleaf-hotfix-04e7785b",
     "version": "0.1.0"
   },
+  "neonomaly": {
+    "bundle": "com.pushpopinteractive.neonomaly",
+    "display": "Neonomaly",
+    "ipa": "neonomaly.ipa",
+    "tag": "install-neonomaly",
+    "version": "0.1"
+  },
   "orbcrash": {
     "bundle": "com.pushpopinteractive.orbcrash",
     "display": "Orbcrash",

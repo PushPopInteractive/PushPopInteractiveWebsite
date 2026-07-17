@@ -71,10 +71,20 @@ echo "==> [2/5] Archive + export signed .ipa (team $TEAM)"
 # Rely on the team's Xcode-managed profiles already on this Mac (no Apple ID
 # session): plain automatic signing, no -allowProvisioningUpdates (that flag
 # fails with "No Accounts"). Same signing path the other Pushpop apps ship with.
+# Version stamping: Godot leaves $(MARKETING_VERSION)/$(CURRENT_PROJECT_VERSION)
+# unexpanded, so every build shipped as the same version+build number and iOS
+# refused to replace an already-installed app ("installs" but keeps the old
+# binary). Stamp a real version and an always-increasing build number.
+MKT_VERSION="$(grep -E '^application/short_version=' "$PROJDIR/export_presets.cfg" 2>/dev/null | head -1 | sed -E 's/.*"([^"]*)".*/\1/')"
+[[ -z "$MKT_VERSION" ]] && MKT_VERSION="0.1"
+BUILD_NUM="$(date +%s)"   # monotonic: every build is newer than the last
+echo "    stamping version $MKT_VERSION build $BUILD_NUM"
+
 xcodebuild -project "$XCPROJ" -scheme "$SCHEME" -configuration Debug \
   -sdk iphoneos -archivePath "$WORK/$SLUG.xcarchive" -derivedDataPath "$DD" \
   -allowProvisioningUpdates \
   DEVELOPMENT_TEAM="$TEAM" CODE_SIGN_STYLE=Automatic PRODUCT_BUNDLE_IDENTIFIER="$BUNDLE" \
+  MARKETING_VERSION="$MKT_VERSION" CURRENT_PROJECT_VERSION="$BUILD_NUM" \
   archive 2>&1 | grep -viE "^ *ld: warning|ignoring file|auto-linked|implicit file" | tail -12
 if [[ ! -d "$WORK/$SLUG.xcarchive" ]]; then
   echo "!! Archive failed — see output above."; exit 2
@@ -102,14 +112,8 @@ IPANAME="$(basename "$IPA")"
 echo "    ipa: $IPA ($(du -h "$IPA" | cut -f1))"
 
 echo "==> [3/5] Version + icon"
-VERSION="$(/usr/bin/plutil -extract CFBundleShortVersionString raw -o - "$PLIST" 2>/dev/null || echo '')"
-# Godot writes the Xcode var $(MARKETING_VERSION) into Info.plist; resolve the
-# real number from the export preset instead of shipping the literal placeholder.
-if [[ -z "$VERSION" || "$VERSION" == *'$('* ]]; then
-  VERSION="$(grep -E '^application/short_version=' "$PROJDIR/export_presets.cfg" 2>/dev/null | head -1 | sed -E 's/.*"([^"]*)".*/\1/')"
-  [[ -z "$VERSION" ]] && VERSION="0.1.0"
-fi
-echo "    version: $VERSION"
+VERSION="$MKT_VERSION"
+echo "    version: $VERSION (build $BUILD_NUM)"
 ICON="$WEBROOT/assets/games/$SLUG/icon.png"      # the web icon we already ship
 if [[ ! -f "$ICON" ]]; then
   # fall back to the largest icon inside the built app

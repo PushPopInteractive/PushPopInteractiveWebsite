@@ -8,6 +8,18 @@ EMAIL = "pushpopinteractive@gmail.com"
 
 GAMES = [
     dict(
+        slug="neonomaly", name="Neonomaly", status="dev",
+        media="cover",
+        tagline="Dive the sim. Overload the Core.",
+        one="A neon arcade shmup in the Life Force tradition — learnable waves, squadron wipes that drop power-ups, and a dive toward the simulation's Core.",
+        tags=["Shmup", "Arcade", "Cyberpunk Neon"],
+        desc=[
+            "Neonomaly is a neon arcade shoot-'em-up built the old way — Life Force and Salamander, not bullet hell. Waves are scripted and learnable: fewer, faster bullets, squadrons you wipe for power-ups, and a loadout you fight to keep because death takes it away.",
+            "You're a star captain flying inside the simulation, behind the matrix. Descend layer by layer toward the Core — the sim's brain — and overload it, while the grid bleeds from cyan to red the deeper you go.",
+        ],
+        shots=[],
+    ),
+    dict(
         slug="orbcrash", name="Orbcrash", status="soon",
         media="cover",
         tagline="Merge. Burst. Chain. Repeat.",

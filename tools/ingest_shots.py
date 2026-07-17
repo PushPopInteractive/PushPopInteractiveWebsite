@@ -22,6 +22,7 @@ SLUGS = {
     "yahikono": "yahiko-no", "yahiko": "yahiko-no",
     "rats": "rats", "resurrectedasthesystem": "rats",
     "unearth": "unearth", "localmyth": "local-myth",
+    "neonomaly": "neonomaly",
 }
 EXTS = (".png", ".jpg", ".jpeg", ".webp", ".heic")
 

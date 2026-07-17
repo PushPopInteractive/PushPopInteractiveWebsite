@@ -10,12 +10,12 @@ GAMES = [
     dict(
         slug="neonomaly", name="Neonomaly", status="dev",
         media="cover",
-        tagline="Dive the sim. Overload the Core.",
-        one="A neon arcade shmup with learnable, scripted waves — squadron wipes drop power-ups, and you dive toward the simulation's Core.",
+        tagline="You are the anomaly.",
+        one="A shmup drawn in pure neon: waves you can learn, firepower you can lose, and a dive that ends at the simulation's Core.",
         tags=["Shmup", "Arcade", "Cyberpunk Neon"],
         desc=[
-            "Neonomaly is a neon arcade shoot-'em-up — scripted, learnable waves, not bullet hell. Fewer, faster bullets, squadrons you wipe for power-ups, and a loadout you fight to keep because death takes it away.",
-            "You're a star captain flying inside the simulation, behind the matrix. Descend layer by layer toward the Core — the sim's brain — and overload it, while the grid bleeds from cyan to red the deeper you go.",
+            "Somewhere in the simulation, something doesn't belong. It's you. Neonomaly straps a star captain into the machine itself — a shoot-'em-up rendered in raw, glowing neon, where the grid burns cyan at the surface and bleeds red the deeper you dive.",
+            "No bullet-hell curtains here: every wave is scripted, learnable, and beatable on skill. Squadrons drop power-ups when you wipe them clean, and your hard-won loadout dies with you — so master the run, keep your guns, and burn out the Core.",
         ],
         shots=[],
     ),

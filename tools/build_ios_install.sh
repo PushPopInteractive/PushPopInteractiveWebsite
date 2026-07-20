@@ -162,4 +162,4 @@ PY
 
 echo ""
 echo "==> Done. Now run:  python3 tools/gen_install_pages.py  (then commit & push)"
-echo "    Install link:   https://pushpopgames.com/install/$SLUG/"
+echo "    Install link:   https://pushpopgames.com/install/  (index; no per-game pages)"

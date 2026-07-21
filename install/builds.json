@@ -6,6 +6,13 @@
     "tag": "install-developmenttracker",
     "version": "1.3"
   },
+  "familytree": {
+    "bundle": "com.pushpopinteractive.familytree",
+    "display": "Family Tree",
+    "ipa": "familytree.ipa",
+    "tag": "install-familytree",
+    "version": "1.0"
+  },
   "gatefall": {
     "bundle": "com.pushpopinteractive.gatefall",
     "display": "GateFall",

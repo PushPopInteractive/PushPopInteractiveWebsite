@@ -1,4 +1,11 @@
 {
+  "developmenttracker": {
+    "bundle": "com.pushpopinteractive.DevelopmentTracker",
+    "display": "DevelopmentTracker",
+    "ipa": "DevelopmentTracker.ipa",
+    "tag": "install-developmenttracker",
+    "version": "1.0"
+  },
   "gatefall": {
     "bundle": "com.pushpopinteractive.gatefall",
     "display": "GateFall",

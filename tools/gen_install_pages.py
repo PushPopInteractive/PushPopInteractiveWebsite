@@ -132,7 +132,7 @@ def index_page(builds, aud, audiences):
 <div class="wrap">
   <div class="aud">{esc(aud['label'])}</div>
   <h1>PushPop — iPhone builds</h1>
-  <p class="sub">Private install links. Tap a game to install or update it. Not for public distribution.</p>
+  <p class="sub">Private install links. Tap an app to install or update it. Not for public distribution.</p>
   <div id="notsafari" class="warn">⚠️ iPhone install links only work in <b>Safari</b>.
     Copy this page's link, open <b>Safari</b>, paste it, and tap there.</div>
   {switch}

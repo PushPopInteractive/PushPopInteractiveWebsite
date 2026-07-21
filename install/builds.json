@@ -4,7 +4,7 @@
     "display": "DevelopmentTracker",
     "ipa": "DevelopmentTracker.ipa",
     "tag": "install-developmenttracker",
-    "version": "1.3"
+    "version": "1.4"
   },
   "familytree": {
     "bundle": "com.pushpopinteractive.familytree",

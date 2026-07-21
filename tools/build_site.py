@@ -81,6 +81,19 @@ GAMES = [
         shots=[],
     ),
     dict(
+        slug="sourcewar", name="SourceWar", status="dev",
+        media="icon",
+        tagline="Three powers. One layer beneath reality.",
+        one="A real-time strategy war fought in the computational bedrock under existence — three civilizations, two resources, up to eight commanders.",
+        tags=["Real-Time Strategy", "Mac", "2\u20138 Player LAN"],
+        desc=[
+            "Beneath simulated existence lies the foundational layer — and three civilizations mean to own it. The Court of the Sleeping King guards it as nature's deepest root. The Kingdom of the Holy Order calls it Hell and burns to cleanse it for Aurelia. The Syndicate sees the Singularity, and the end of its long hunt for technical omniscience.",
+            "SourceWar runs on exactly two resources, and both must be taken: Energy channeled from passive beings, and Materia torn from the aggressive monsters roaming the deep. No neutral ground, no third option.",
+            "Six battlefields across Small, Large, and Extra Large, built for two to eight commanders over LAN — free-for-all or team war — plus local skirmish against the AI.",
+        ],
+        shots=[],
+    ),
+    dict(
         slug="spellbash-td", name="Spellbash TD", status="dev",
         media="pad",
         tagline="Free placement. True 3D. 50+ levels.",

@@ -372,7 +372,7 @@ def build_index():
     <img class="hero-logo" src="/assets/pushpop_logo.png" alt="PushPop Interactive" width="360">
     <h1>Juicy little games,<br><span class="grad">made with far too much care.</span></h1>
     <p class="sub">PushPop Interactive is an indie game studio making bright, tactile,
-    delightfully juicy games for iPhone and iPad. No ads. No accounts. No nonsense — just games.</p>
+    delightfully juicy games for iOS, Mac, and PC. No ads. No accounts. No nonsense — just games.</p>
     <div class="hero-cta">
       <a class="btn" href="#games">Browse the games</a>
       <a class="btn ghost" href="mailto:{EMAIL}">Say hello</a>
@@ -403,7 +403,7 @@ def build_index():
       Screens you want to touch, systems that reward one more run, and zero of the stuff that
       makes mobile games feel gross. Our games ship with <strong>no ads, no accounts, and no
       tracking</strong> — your progress lives on your device and nowhere else.</p>
-      <p>Built with ❤️ (and Godot) for iPhone and iPad.</p>
+      <p>Built with ❤️ (and Godot) for iOS, Mac, and PC.</p>
     </div>
   </div>
 </section>
@@ -418,8 +418,8 @@ def build_index():
 </section>
 {footer()}"""
     return head(
-        "PushPop Interactive — Juicy indie games for iPhone & iPad",
-        "PushPop Interactive is an indie game studio making bright, tactile, delightfully juicy games for iOS — including Orbcrash, Squishfall, Kingdom Blackjack, and more.",
+        "PushPop Interactive — Juicy indie games for iOS, Mac & PC",
+        "PushPop Interactive is an indie game studio making bright, tactile, delightfully juicy games for iOS, Mac, and PC — including Orbcrash, Squishfall, SourceWar, and more.",
         f"{SITE}/", f"{SITE}/assets/pushpop_logo.png",
     ) + body
 

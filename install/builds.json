@@ -11,7 +11,7 @@
     "display": "Family Tree",
     "ipa": "familytree.ipa",
     "tag": "install-familytree",
-    "version": "1.4"
+    "version": "1.5"
   },
   "gatefall": {
     "bundle": "com.pushpopinteractive.gatefall",

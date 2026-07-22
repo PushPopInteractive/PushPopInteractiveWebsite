@@ -8,6 +8,7 @@
 #
 # e.g.
 #   tools/build_ios_install.sh orbcrash /Users/openclaw/Orbcrash "Orbcrash" com.pushpopinteractive.orbcrash
+# Portrait-only games: prefix the command with IOS_ORIENTATION=portrait.
 #
 # What it does:
 #   1. Godot exports the game -> a fresh Xcode project (+ the orientation fix).
@@ -58,10 +59,16 @@ if [[ -z "$SCHEME" ]]; then
 fi
 echo "    project: $XCPROJ  (scheme: $SCHEME)"
 
-# Free rotation: Godot 4.6 writes one fixed orientation and often gets it wrong.
+# Godot 4.6 writes one fixed orientation and often gets it wrong. Most PushPop
+# builds use free rotation, but rhythm layouts such as Neonomaly: Pulse must
+# remain portrait-only.
 PLIST="$(ls "$XCPROJ_DIR"/*/*-Info.plist 2>/dev/null | head -1)"
 if [[ -f "$PLIST" ]]; then
-  ORIENTS='["UIInterfaceOrientationPortrait","UIInterfaceOrientationLandscapeLeft","UIInterfaceOrientationLandscapeRight"]'
+  if [[ "${IOS_ORIENTATION:-free}" == "portrait" ]]; then
+    ORIENTS='["UIInterfaceOrientationPortrait"]'
+  else
+    ORIENTS='["UIInterfaceOrientationPortrait","UIInterfaceOrientationLandscapeLeft","UIInterfaceOrientationLandscapeRight"]'
+  fi
   for key in UISupportedInterfaceOrientations "UISupportedInterfaceOrientations~ipad"; do
     /usr/bin/plutil -replace "$key" -json "$ORIENTS" "$PLIST" >/dev/null 2>&1 || true
   done
@@ -156,7 +163,9 @@ reg = os.path.join(webroot, "install", "builds.json")
 os.makedirs(os.path.dirname(reg), exist_ok=True)
 data = json.load(open(reg)) if os.path.exists(reg) else {}
 data[slug] = {"display": display, "bundle": bundle, "version": version, "ipa": ipaname, "tag": tag}
-json.dump(data, open(reg, "w"), indent=2, sort_keys=True)
+with open(reg, "w") as f:
+    json.dump(data, f, indent=2, sort_keys=True)
+    f.write("\n")
 print("    registry updated:", reg)
 PY
 

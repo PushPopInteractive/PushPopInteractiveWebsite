@@ -19,6 +19,10 @@ python3 tools/gen_install_pages.py
 git add -A && git commit -m "iPhone build: <slug>" && git push
 ```
 
+Prefix the build command with `IOS_ORIENTATION=portrait` for games whose UI
+must remain portrait-only. Other builds retain the existing free-rotation
+behavior.
+
 `build_ios_install.sh` exports the game from Godot, archives + signs a `.ipa`
 (team `P725B32RWV`, automatic signing via the Mac's managed profiles), writes
 `manifest.plist`, grabs the icon, and uploads all three to the GitHub release

@@ -54,6 +54,13 @@
     "tag": "install-neonomaly",
     "version": "0.1"
   },
+  "neonomaly-pulse": {
+    "bundle": "com.pushpopinteractive.neonomalypulse",
+    "display": "Neonomaly: Pulse",
+    "ipa": "neonomaly-pulse.ipa",
+    "tag": "install-neonomaly-pulse",
+    "version": "0.1"
+  },
   "orbcrash": {
     "bundle": "com.pushpopinteractive.orbcrash",
     "display": "Orbcrash",

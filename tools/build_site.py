@@ -20,7 +20,8 @@ GAMES = [
         shots=[],
     ),
     dict(
-        slug="orbcrash", name="Orbcrash", status="soon",
+        slug="orbcrash", name="Orbcrash", status="out",
+        store="https://apps.apple.com/app/id6782451083",
         media="cover",
         tagline="Merge. Burst. Chain. Repeat.",
         one="A juicy, colorful match-roguelike — squish jelly orbs until the whole board erupts.",
@@ -216,9 +217,16 @@ GAMES = [
 ]
 
 STATUS = {
+    "out": ("Out Now!", "out"),
     "soon": ("Coming Soon", "soon"),
     "dev": ("In Development", "dev"),
 }
+
+
+def store_btn(g, cls="try-btn"):
+    """App Store link for released games (games without a store URL render nothing)."""
+    url = g.get("store")
+    return f'<a class="{cls}" href="{url}"> Download on the App Store</a>' if url else ""
 
 def discovered_shots(slug):
     """shot-*.jpg/png files in the game's asset folder, sorted by name."""
@@ -362,7 +370,7 @@ def build_index():
         <div class="card-body">
           <h3>{esc(g['name'])}</h3>
           <p>{esc(g['one'])}</p>{shots_row}
-          {chips(g)}{try_btn}
+          {chips(g)}{store_btn(g)}{try_btn}
         </div>
       </div>"""
 
@@ -447,8 +455,12 @@ def build_game(g):
     <div class="shots">{imgs}
     </div>"""
 
-    status_line = ("Orbcrash is coming soon to the App Store." if g["status"] == "soon"
-                   else f"{g['name']} is in development at PushPop Interactive — it isn't on the App Store just yet.")
+    if g["status"] == "out":
+        status_line = f"{g['name']} is out now on the App Store."
+    elif g["status"] == "soon":
+        status_line = f"{g['name']} is coming soon to the App Store."
+    else:
+        status_line = f"{g['name']} is in development at PushPop Interactive — it isn't on the App Store just yet."
 
     body = f"""{nav('games')}
 <header class="game-hero">
@@ -469,9 +481,10 @@ def build_game(g):
   {shots}
 
   <div class="cta-card">
-    <h2>{'Want to know the moment it lands?' if g['status']=='soon' else 'Curious about ' + esc(g['name']) + '?'}</h2>
-    <p>{esc(status_line)} Questions, feedback, or just want a launch heads-up? Drop us a line — we read every message.</p>
+    <h2>{'Playing it? Tell us what you think.' if g['status']=='out' else ('Want to know the moment it lands?' if g['status']=='soon' else 'Curious about ' + esc(g['name']) + '?')}</h2>
+    <p>{esc(status_line)} {'Questions, feedback, or found a bug?' if g['status'] == 'out' else 'Questions, feedback, or just want a launch heads-up?'} Drop us a line — we read every message.</p>
     <div class="cta-row">
+      {store_btn(g, 'btn')}
       <a class="btn" href="mailto:{EMAIL}?subject={esc(g['name'])}">📬 Email the studio</a>
       <a class="btn ghost" href="/support.html">Support &amp; FAQ</a>
     </div>
@@ -525,7 +538,7 @@ def build_support():
     </details>
     <details>
       <summary>When is [game] coming out?</summary>
-      <p>Orbcrash is coming soon to the App Store, and the rest of the catalog is in active development. Email us if you'd like a heads-up when a specific game launches.</p>
+      <p>Orbcrash is out now on the App Store. The rest of the catalog is in active development — email us if you'd like a heads-up when a specific game launches.</p>
     </details>
     <details>
       <summary>I found a bug — what should I include?</summary>

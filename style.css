@@ -206,6 +206,7 @@ section { padding: 64px 0; }
   padding: 5px 12px; border-radius: 999px;
   backdrop-filter: blur(6px);
 }
+.badge.out { background: linear-gradient(135deg, #12d96e, #5affa0); color: #04240f; box-shadow: 0 4px 18px #12d96e66; }
 .badge.soon { background: var(--grad); color: #1a0c06; box-shadow: 0 4px 18px #ff5a3c66; }
 .badge.dev { background: #0e0e1acc; color: #cfcbe8; border: 1px solid #ffffff2e; }
 

@@ -241,6 +241,20 @@ def store_btn(g, cls="try-btn"):
     url = g.get("store")
     return f'<a class="{cls}" href="{url}"> Download on the App Store</a>' if url else ""
 
+def hero_bg(slug):
+    """the hero's own background colour, so the full-width banner reads seamless"""
+    from PIL import Image
+    import glob
+    f = glob.glob(f"{ROOT}/assets/games/{slug}/hero.*")
+    if not f:
+        return "#0d0d18"
+    try:
+        r, g, b = Image.open(f[0]).convert("RGB").getpixel((4, 4))
+        return f"rgb({r},{g},{b})"
+    except Exception:
+        return "#0d0d18"
+
+
 def discovered_shots(slug):
     """shot-*.jpg/png files in the game's asset folder, sorted by name."""
     import glob
@@ -479,7 +493,7 @@ def build_game(g):
         status_line = f"{g['name']} is in development at PushPop Interactive — it isn't on the App Store just yet."
 
     body = f"""{nav('games')}
-<header class="game-hero">
+<header class="game-hero" style="background:{hero_bg(g['slug'])}">
   {media(g, big=True)}
 </header>
 

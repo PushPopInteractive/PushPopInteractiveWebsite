@@ -157,9 +157,11 @@ section { padding: 64px 0; }
 .media-wrap { position: relative; }
 
 /* stretched link covering the card; try-btn floats above it */
-.card-hit { position: absolute; inset: 0; z-index: 1; border-radius: var(--radius); }
+/* click layer must sit ABOVE all media (media images use z-index 1), and the
+   try button above that, or the image swallows the click */
+.card-hit { position: absolute; inset: 0; z-index: 2; border-radius: var(--radius); }
 .try-btn {
-  position: relative; z-index: 2;
+  position: relative; z-index: 3;
   display: inline-flex; align-items: center;
   align-self: flex-start; margin-top: 8px;
   font-family: var(--font-display); font-weight: 800; font-size: 14.5px;

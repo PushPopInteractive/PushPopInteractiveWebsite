@@ -84,7 +84,7 @@ GAMES = [
     ),
     dict(
         slug="kingdom-sweeper", name="Kingdom Sweeper", status="dev",
-        media="pad",
+        media="cover",
         tagline="Sweep the field. Bend the odds.",
         one="A fantasy minesweeper roguelike — bank Glory to meet each quota, then stack charm cards to cheat fate.",
         tags=["Minesweeper Roguelike", "Charm Cards", "Fantasy"],
@@ -217,7 +217,7 @@ GAMES = [
     ),
     dict(
         slug="local-myth", name="Local Myth", status="dev",
-        media="blur",
+        media="cover",
         tagline="An AI dungeon master of your very own.",
         one="Solo RPG adventures run by an AI dungeon master — private on your own machine, or in the cloud when you roam.",
         tags=["AI Dungeon Master", "Solo RPG", "Mac & iPhone"],

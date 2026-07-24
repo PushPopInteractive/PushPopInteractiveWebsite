@@ -8,7 +8,7 @@ EMAIL = "pushpopinteractive@gmail.com"
 
 GAMES = [
     dict(
-        slug="neonomaly", name="Neonomaly", status="dev",
+        slug="neonomaly", name="Neonomaly", status="soon",
         media="cover",
         tagline="You are the anomaly.",
         one="Tear through the machine in a warship of pure light — wipe squadrons, stack an obscene arsenal, and blow out the Core.",
@@ -357,7 +357,10 @@ def has_demo(slug):
 def build_index():
     cards = ""
     # playable games first (stable: curated order preserved within each group)
-    ordered = [g for g in GAMES if has_demo(g["slug"])] + [g for g in GAMES if not has_demo(g["slug"])]
+    PINNED = ["orbcrash", "neonomaly"]          # featured, in this order
+    pinned = [g for s in PINNED for g in GAMES if g["slug"] == s]
+    rest = [g for g in GAMES if g["slug"] not in PINNED]
+    ordered = pinned + [g for g in rest if has_demo(g["slug"])] + [g for g in rest if not has_demo(g["slug"])]
     for g in ordered:
         try_btn = ""
         if os.path.exists(f"{ROOT}/play/{g['slug']}/index.html"):

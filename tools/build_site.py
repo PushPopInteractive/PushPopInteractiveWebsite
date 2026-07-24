@@ -96,7 +96,7 @@ GAMES = [
     ),
     dict(
         slug="sourcewar", name="SourceWar", status="dev",
-        media="icon",
+        media="cover",
         tagline="Three powers. One layer beneath reality.",
         one="A real-time strategy war fought in the computational bedrock under existence — three civilizations, two resources, up to eight commanders.",
         tags=["Real-Time Strategy", "Mac", "2\u20138 Player LAN"],

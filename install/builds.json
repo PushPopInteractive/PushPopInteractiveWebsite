@@ -61,6 +61,13 @@
     "tag": "install-neonomaly-pulse",
     "version": "0.1"
   },
+  "noceternal": {
+    "bundle": "com.pushpopinteractive.noceternal",
+    "display": "Noceternal",
+    "ipa": "noceternal.ipa",
+    "tag": "install-noceternal",
+    "version": "0.5.1"
+  },
   "orbcrash": {
     "bundle": "com.pushpopinteractive.orbcrash",
     "display": "Orbcrash",

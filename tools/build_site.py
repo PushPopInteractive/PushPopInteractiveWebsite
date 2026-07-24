@@ -9,7 +9,7 @@ EMAIL = "pushpopinteractive@gmail.com"
 GAMES = [
     dict(
         slug="neonomaly", name="Neonomaly", status="dev",
-        media="cover",
+        media="blur",
         tagline="You are the anomaly.",
         one="Tear through the machine in a warship of pure light — wipe squadrons, stack an obscene arsenal, and blow out the Core.",
         tags=["Shmup", "Arcade", "Cyberpunk Neon"],
@@ -35,7 +35,7 @@ GAMES = [
     dict(
         slug="orbcrash", name="Orbcrash", status="out",
         store="https://apps.apple.com/app/id6782451083",
-        media="cover",
+        media="blur",
         tagline="Merge. Burst. Chain. Repeat.",
         one="A juicy, colorful match-roguelike — squish jelly orbs until the whole board erupts.",
         tags=["Match Roguelike", "Chain Reactions", "Fully Offline"],
@@ -121,7 +121,7 @@ GAMES = [
     ),
     dict(
         slug="spellbash", name="Spellbash", status="dev",
-        media="cover",
+        media="blur",
         tagline="One wizard becomes an army.",
         one="A multiplier-gate lane runner done right — sprint the lane, stack casters through power gates, blast the horde.",
         tags=["Lane Runner", "Roguelike Meta", "Fantasy"],

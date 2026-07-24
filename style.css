@@ -265,9 +265,12 @@ section { padding: 64px 0; }
 
 .game-hero { padding: 0; }
 .game-hero .media.big {
-  aspect-ratio: auto; height: min(46vh, 440px);
-  border-bottom: 1px solid var(--line);
-  border-radius: 0;
+  /* same frame ratio as the cards, centered — heroes are baked to this ratio so
+     they always fill it without cropping the wordmark or magnifying a blur */
+  aspect-ratio: 16 / 9.4; height: auto;
+  max-width: 1000px; margin: 26px auto 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
 }
 .game-hero .media.big .contain { max-height: 82%; }
 .game-hero .media.big .appicon { width: auto; height: 52%; }

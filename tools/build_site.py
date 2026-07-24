@@ -9,7 +9,7 @@ EMAIL = "pushpopinteractive@gmail.com"
 GAMES = [
     dict(
         slug="neonomaly", name="Neonomaly", status="dev",
-        media="blur",
+        media="cover",
         tagline="You are the anomaly.",
         one="Tear through the machine in a warship of pure light — wipe squadrons, stack an obscene arsenal, and blow out the Core.",
         tags=["Shmup", "Arcade", "Cyberpunk Neon"],
@@ -35,7 +35,7 @@ GAMES = [
     dict(
         slug="orbcrash", name="Orbcrash", status="out",
         store="https://apps.apple.com/app/id6782451083",
-        media="blur",
+        media="cover",
         tagline="Merge. Burst. Chain. Repeat.",
         one="A juicy, colorful match-roguelike — squish jelly orbs until the whole board erupts.",
         tags=["Match Roguelike", "Chain Reactions", "Fully Offline"],
@@ -109,7 +109,7 @@ GAMES = [
     ),
     dict(
         slug="spellbash-td", name="Spellbash TD", status="dev",
-        media="pad",
+        media="cover",
         tagline="Free placement. True 3D. 50+ levels.",
         one="A fantasy tower defense on hand-authored 3D maps where roads duck under bridges and cross back over.",
         tags=["Tower Defense", "True-3D Maps", "50+ Level Campaign"],
@@ -121,7 +121,7 @@ GAMES = [
     ),
     dict(
         slug="spellbash", name="Spellbash", status="dev",
-        media="blur",
+        media="cover",
         tagline="One wizard becomes an army.",
         one="A multiplier-gate lane runner done right — sprint the lane, stack casters through power gates, blast the horde.",
         tags=["Lane Runner", "Roguelike Meta", "Fantasy"],
@@ -169,7 +169,7 @@ GAMES = [
     ),
     dict(
         slug="shorewood-days", name="Shorewood Days", status="dev",
-        media="pad",
+        media="cover",
         tagline="Slow days. Small mysteries.",
         one="A cozy beach-house life & mystery game set in the seaside village of Shorewood.",
         tags=["Cozy", "Life Sim", "Mystery"],
@@ -405,7 +405,7 @@ def build_index():
   <div class="wrap wide">
     <p class="eyebrow">The catalog</p>
     <h2 class="section-title">{len(GAMES)} games &amp; counting</h2>
-    <p class="section-sub">Everything below is headed to the App Store. Some are nearly there, some are still in the oven — all of them are being made with far too much care.</p>
+    <p class="section-sub">Some are nearly ready, some are still in the oven — all of them are being made with far too much care.</p>
     <div class="grid">{cards}
     </div>
   </div>

@@ -20,6 +20,19 @@ GAMES = [
         shots=[],
     ),
     dict(
+        slug="noceternal", name="Noceternal", status="dev",
+        media="cover",
+        tagline="The dead don't stop. Neither do you.",
+        one="A horde-survival gauntlet — carve through endless undead, evolve your weapons, and survive twelve minutes to the final boss.",
+        tags=["Horde Survival", "Roguelite", "Boss Rush"],
+        desc=[
+            "The undead come in waves that never thin, and everything you kill makes you stronger. Noceternal is a horde-survival run where you move, the killing happens automatically, and every level-up is a fork in the road — stack the right upgrades and watch a single weapon evolve into something that clears the screen.",
+            "Twelve minutes is the whole war. Minor bosses crash the party at three, six, and nine, and if you're still standing at twelve the final boss decides whether the run was worth it.",
+            "Five stages unlock as you go — graveyard, drowned fen, plaguefall village, frostbound ossuary, and the eclipse citadel — each with its own enemy schedule, hazards, and bosses.",
+        ],
+        shots=[],
+    ),
+    dict(
         slug="orbcrash", name="Orbcrash", status="out",
         store="https://apps.apple.com/app/id6782451083",
         media="cover",

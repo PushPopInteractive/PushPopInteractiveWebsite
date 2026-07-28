@@ -158,7 +158,24 @@ if ! gh release view "$TAG" -R "$REPO" >/dev/null 2>&1; then
   gh release create "$TAG" -R "$REPO" --prerelease --title "$DISPLAY — iPhone build" \
     --notes "Development install build for registered iPhones. Bundle $BUNDLE, v$VERSION." >/dev/null
 fi
-gh release upload "$TAG" "$IPA" "$WORK/icon.png" "$WORK/manifest.plist" --clobber -R "$REPO" >/dev/null
+# GitHub release assets collide case-insensitively, while `--clobber` only
+# resolves the exact requested spelling. Remove a case-only stale match first
+# so an old `game.ipa` cannot block a new `Game.ipa`.
+for publish_asset in "$IPA" "$WORK/icon.png" "$WORK/manifest.plist"; do
+  desired_name="$(basename "$publish_asset")"
+  case_collision="$(gh release view "$TAG" -R "$REPO" --json assets \
+    --jq '.assets[].name' | awk -v desired="$desired_name" \
+    'tolower($0) == tolower(desired) && $0 != desired { print; exit }')"
+  if [[ -n "$case_collision" ]]; then
+    echo "    removing case-colliding asset: $case_collision"
+    gh release delete-asset "$TAG" "$case_collision" --yes -R "$REPO" >/dev/null
+  fi
+done
+if ! gh release upload "$TAG" "$IPA" "$WORK/icon.png" "$WORK/manifest.plist" \
+    --clobber -R "$REPO" >/dev/null; then
+  echo "!! Release upload failed; registry/install page was not updated."
+  exit 4
+fi
 # record metadata for the page generator
 python3 - "$WEBROOT" "$SLUG" "$DISPLAY" "$BUNDLE" "$VERSION" "$IPANAME" "$TAG" <<'PY'
 import json, os, sys

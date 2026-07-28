@@ -82,6 +82,13 @@
     "tag": "install-rats",
     "version": "1.0"
   },
+  "returnity": {
+    "bundle": "com.pushpopinteractive.returnity",
+    "display": "Returnity",
+    "ipa": "returnity.ipa",
+    "tag": "install-returnity",
+    "version": "1.0"
+  },
   "shorewood-days": {
     "bundle": "com.pushpopinteractive.shorewooddays",
     "display": "Shorewood Days",

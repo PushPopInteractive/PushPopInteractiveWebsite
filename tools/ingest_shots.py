@@ -23,6 +23,7 @@ SLUGS = {
     "rats": "rats", "resurrectedasthesystem": "rats",
     "unearth": "unearth", "localmyth": "local-myth",
     "neonomaly": "neonomaly",
+    "returnity": "returnity",
 }
 EXTS = (".png", ".jpg", ".jpeg", ".webp", ".heic")
 

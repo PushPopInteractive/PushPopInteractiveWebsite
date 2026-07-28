@@ -20,6 +20,19 @@ GAMES = [
         shots=[],
     ),
     dict(
+        slug="returnity", name="Returnity", status="dev",
+        media="cover",
+        tagline="The dead don't stay down — and neither do you.",
+        one="An action RPG of five classes, twelve zones, and loot worth dying for — clear the world and it comes back harder.",
+        tags=["Action RPG", "Loot Hunt", "Five Classes"],
+        desc=[
+            "Returnity is an action RPG cut to the old shape: click, carve, and watch the floor fill with drops. Five classes, each split into two specialties deep enough that one run only ever masters a single tree — a split-souled crusader, a magical girl who shifts into werewolf or demonkin, an ensouled golem, a Lorekeeper hiding the fastest blade alive, and more.",
+            "Twelve connected zones you actually walk: the Blackmoor graveyard, the Mirefen swamp, sunny Goldfields, snow-capped Frostmere, and the dark beneath them — Sunken Crypt, lava-lit Emberfell, and a minotaur's Labyrinth that generates a true maze every time. Last Lantern is home: healer, gambler, and a stash for the hoard.",
+            "Six rarities of loot, boss signature uniques, champion packs and roaming rares, and twenty custom monsters. Put down all nine bosses and the world doesn't end — it wakes up as NIGHTMARE, then HELL, rescaled and hungrier.",
+        ],
+        shots=[],
+    ),
+    dict(
         slug="noceternal", name="Noceternal", status="dev",
         media="cover",
         tagline="The dead don't stop. Neither do you.",

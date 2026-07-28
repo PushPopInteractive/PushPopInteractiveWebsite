@@ -61,11 +61,15 @@ echo "    project: $XCPROJ  (scheme: $SCHEME)"
 
 # Godot 4.6 writes one fixed orientation and often gets it wrong. Most PushPop
 # builds use free rotation, but rhythm layouts such as Neonomaly: Pulse must
-# remain portrait-only.
+# remain portrait-only, and wide games (top-down ARPGs) must be landscape-only.
+# NOTE: iOS launches into the FIRST listed orientation it can honor, so a list
+# beginning with Portrait opens portrait even on a landscape-designed game.
 PLIST="$(ls "$XCPROJ_DIR"/*/*-Info.plist 2>/dev/null | head -1)"
 if [[ -f "$PLIST" ]]; then
   if [[ "${IOS_ORIENTATION:-free}" == "portrait" ]]; then
     ORIENTS='["UIInterfaceOrientationPortrait"]'
+  elif [[ "${IOS_ORIENTATION:-free}" == "landscape" ]]; then
+    ORIENTS='["UIInterfaceOrientationLandscapeLeft","UIInterfaceOrientationLandscapeRight"]'
   else
     ORIENTS='["UIInterfaceOrientationPortrait","UIInterfaceOrientationLandscapeLeft","UIInterfaceOrientationLandscapeRight"]'
   fi

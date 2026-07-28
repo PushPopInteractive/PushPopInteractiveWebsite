@@ -23,12 +23,12 @@ GAMES = [
         slug="returnity", name="Returnity", status="dev",
         media="cover",
         tagline="The dead don't stay down — and neither do you.",
-        one="An action RPG of five classes, twelve zones, and loot worth dying for — clear the world and it comes back harder.",
-        tags=["Action RPG", "Loot Hunt", "Five Classes"],
+        one="An action RPG of wildly different heroes, a world you walk end to end, and loot worth dying for — beat it and it comes back hungrier.",
+        tags=["Action RPG", "Loot Hunt", "Class Builds"],
         desc=[
-            "Returnity is an action RPG cut to the old shape: click, carve, and watch the floor fill with drops. Five classes, each split into two specialties deep enough that one run only ever masters a single tree — a split-souled crusader, a magical girl who shifts into werewolf or demonkin, an ensouled golem, a Lorekeeper hiding the fastest blade alive, and more.",
-            "Twelve connected zones you actually walk: the Blackmoor graveyard, the Mirefen swamp, sunny Goldfields, snow-capped Frostmere, and the dark beneath them — Sunken Crypt, lava-lit Emberfell, and a minotaur's Labyrinth that generates a true maze every time. Last Lantern is home: healer, gambler, and a stash for the hoard.",
-            "Six rarities of loot, boss signature uniques, champion packs and roaming rares, and twenty custom monsters. Put down all nine bosses and the world doesn't end — it wakes up as NIGHTMARE, then HELL, rescaled and hungrier.",
+            "Returnity is an action RPG cut to the old shape: click, carve, and watch the floor fill with drops. Every class splits down paths deep enough that a single run can only ever master one — a split-souled crusader, a magical girl who shifts into werewolf or demonkin, an ensouled golem, a Lorekeeper hiding the fastest blade alive. Specialize hard, or die generic.",
+            "A connected world you actually walk: the Blackmoor graveyard, the Mirefen swamp, sunny Goldfields, snow-capped Frostmere, and the dark beneath them — sunken crypts, lava-lit Emberfell, and a minotaur's Labyrinth that grows a new maze every time you enter. Last Lantern is home: healer, gambler, and a stash for the hoard.",
+            "Loot in every shade from junk to legend, boss signature uniques, champion packs and roaming rares that hunt you back. Put the bosses down and the world doesn't end — it wakes up as NIGHTMARE, then HELL, rescaled and meaner, with better things to drop.",
         ],
         shots=[],
     ),
@@ -40,8 +40,8 @@ GAMES = [
         tags=["Horde Survival", "Roguelite", "Boss Rush"],
         desc=[
             "The undead come in waves that never thin, and everything you kill makes you stronger. Noceternal is a horde-survival run where you move, the killing happens automatically, and every level-up is a fork in the road — stack the right upgrades and watch a single weapon evolve into something that clears the screen.",
-            "Twelve minutes is the whole war. Minor bosses crash the party at three, six, and nine, and if you're still standing at twelve the final boss decides whether the run was worth it.",
-            "Five stages unlock as you go — graveyard, drowned fen, plaguefall village, frostbound ossuary, and the eclipse citadel — each with its own enemy schedule, hazards, and bosses.",
+            "Twelve minutes is the whole war. Bosses crash the party along the way, and if you're still standing at the end, the last one decides whether the run was worth it.",
+            "New stages unlock as you go — a graveyard, a drowned fen, a plague-struck village, an ossuary of ice, and worse — each with its own hazards, horrors, and bosses waiting.",
         ],
         shots=[],
     ),
@@ -111,24 +111,24 @@ GAMES = [
         slug="sourcewar", name="SourceWar", status="dev",
         media="cover",
         tagline="Three powers. One layer beneath reality.",
-        one="A real-time strategy war fought in the computational bedrock under existence — three civilizations, two resources, up to eight commanders.",
+        one="A real-time strategy war fought in the computational bedrock under existence — three civilizations, one contested layer, up to eight commanders.",
         tags=["Real-Time Strategy", "Mac", "2\u20138 Player LAN"],
         desc=[
             "Beneath simulated existence lies the foundational layer — and three civilizations mean to own it. The Court of the Sleeping King guards it as nature's deepest root. The Kingdom of the Holy Order calls it Hell and burns to cleanse it for Aurelia. The Syndicate sees the Singularity, and the end of its long hunt for technical omniscience.",
-            "SourceWar runs on exactly two resources, and both must be taken: Energy channeled from passive beings, and Materia torn from the aggressive monsters roaming the deep. No neutral ground, no third option.",
-            "Six battlefields across Small, Large, and Extra Large, built for two to eight commanders over LAN — free-for-all or team war — plus local skirmish against the AI.",
+            "Nothing down here is given freely. Energy is channeled from passive beings; Materia is torn from the aggressive monsters roaming the deep. Every economy in SourceWar is something taken from something living.",
+            "Battlefields from skirmish-tight to sprawling, built for two to eight commanders over LAN — free-for-all or team war — plus local skirmish against the AI.",
         ],
         shots=[],
     ),
     dict(
         slug="spellbash-td", name="Spellbash TD", status="dev",
         media="cover",
-        tagline="Free placement. True 3D. 50+ levels.",
+        tagline="Free placement. True 3D. No safe lane.",
         one="A fantasy tower defense on hand-authored 3D maps where roads duck under bridges and cross back over.",
-        tags=["Tower Defense", "True-3D Maps", "50+ Level Campaign"],
+        tags=["Tower Defense", "True-3D Maps", "Campaign"],
         desc=[
             "Spellbash TD is a fantasy tower defense with free tower placement on true-3D, hand-authored maps — roads duck under bridges and cross back over them, and your kill zones have to respect it.",
-            "Fight through a 50+ level campaign with 11 towers with branching upgrades and gem sockets, 37 enemy types, six-color light zones, and 28 commander loadouts to shape how you hold the line.",
+            "Fight through a campaign that keeps introducing towers, branching upgrades, and gem sockets faster than you can settle into a favorite. Light zones recolor the battlefield, commander loadouts reshape your options, and the bestiary keeps sending things your current build wasn't built for.",
         ],
         shots=[],
     ),
@@ -254,6 +254,16 @@ def store_btn(g, cls="try-btn"):
     url = g.get("store")
     return f'<a class="{cls}" href="{url}"> Download on the App Store</a>' if url else ""
 
+def asset_v(path):
+    """?v=<hash8> so an updated image always gets a fresh URL (no stale caches)."""
+    import hashlib
+    p = f"{ROOT}{path}"
+    try:
+        return f"{path}?v={hashlib.sha1(open(p, 'rb').read()).hexdigest()[:8]}"
+    except OSError:
+        return path
+
+
 def hero_bg(slug):
     """the hero's own background colour, so the full-width banner reads seamless"""
     from PIL import Image
@@ -357,15 +367,15 @@ def media(g, big=False):
     icon = f"{base}/icon.png"
     size = "big" if big else ""
     if mode == "cover":
-        return f'<div class="media {size}"><img class="cover" src="{hero}" alt="{esc(g["name"])} key art" loading="lazy"></div>'
+        return f'<div class="media {size}"><img class="cover" src="{asset_v(hero)}" alt="{esc(g["name"])} key art" loading="lazy"></div>'
     if mode == "blur":
-        return (f'<div class="media {size}"><img class="blurbg" src="{hero}" alt="" aria-hidden="true" loading="lazy">'
-                f'<img class="contain" src="{hero}" alt="{esc(g["name"])} key art" loading="lazy"></div>')
+        return (f'<div class="media {size}"><img class="blurbg" src="{asset_v(hero)}" alt="" aria-hidden="true" loading="lazy">'
+                f'<img class="contain" src="{asset_v(hero)}" alt="{esc(g["name"])} key art" loading="lazy"></div>')
     if mode == "pad":
-        return f'<div class="media pad {size}"><img class="contain" src="{hero}" alt="{esc(g["name"])} logo" loading="lazy"></div>'
+        return f'<div class="media pad {size}"><img class="contain" src="{asset_v(hero)}" alt="{esc(g["name"])} logo" loading="lazy"></div>'
     # icon-only
-    return (f'<div class="media {size}"><img class="blurbg" src="{icon}" alt="" aria-hidden="true" loading="lazy">'
-            f'<img class="appicon" src="{icon}" alt="{esc(g["name"])} app icon" loading="lazy"></div>')
+    return (f'<div class="media {size}"><img class="blurbg" src="{asset_v(icon)}" alt="" aria-hidden="true" loading="lazy">'
+            f'<img class="appicon" src="{asset_v(icon)}" alt="{esc(g["name"])} app icon" loading="lazy"></div>')
 
 def badge(g):
     label, k = STATUS[g["status"]]
@@ -403,7 +413,7 @@ def build_index():
             with Image.open(f"{ROOT}/assets/games/{g['slug']}/{shots[0]}") as im:
                 landscape = im.width > im.height
             cls = "card-shots landscape" if landscape else "card-shots"
-            imgs = "".join(f'<img src="/assets/games/{g["slug"]}/{s}" alt="" loading="lazy">' for s in shots)
+            imgs = "".join(f'<img src="{asset_v(f'/assets/games/' + g["slug"] + '/' + s)}" alt="" loading="lazy">' for s in shots)
             shots_row = f"""
           <div class="{cls}">{imgs}</div>"""
         cards += f"""
@@ -491,7 +501,7 @@ def build_game(g):
     shots = ""
     if g["shots"]:
         imgs = "".join(
-            f'\n        <img src="/assets/games/{g["slug"]}/{s}" alt="{esc(g["name"])} screenshot" loading="lazy">'
+            f'\n        <img src="{asset_v("/assets/games/" + g["slug"] + "/" + s)}" alt="{esc(g["name"])} screenshot" loading="lazy">'
             for s in g["shots"])
         shots = f"""
     <h2 class="shots-title">From the game</h2>
@@ -547,7 +557,7 @@ def build_game(g):
 
 def build_support():
     game_links = "".join(
-        f'\n      <a class="mini" href="/games/{g["slug"]}.html"><img src="/assets/games/{g["slug"]}/icon.png" alt="" loading="lazy"><span>{esc(g["name"])}</span></a>'
+        f'\n      <a class="mini" href="/games/{g["slug"]}.html"><img src="{asset_v("/assets/games/" + g["slug"] + "/icon.png")}" alt="" loading="lazy"><span>{esc(g["name"])}</span></a>'
         for g in GAMES if os.path.exists(f"{ROOT}/assets/games/{g['slug']}/icon.png"))
     body = f"""{nav('support')}
 <div class="wrap page">

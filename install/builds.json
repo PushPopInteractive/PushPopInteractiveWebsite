@@ -85,7 +85,7 @@
   "returnity": {
     "bundle": "com.pushpopinteractive.returnity",
     "display": "Returnity",
-    "ipa": "returnity.ipa",
+    "ipa": "Returnity.ipa",
     "tag": "install-returnity",
     "version": "1.0"
   },

@@ -66,7 +66,7 @@
     "display": "Noceternal",
     "ipa": "noceternal.ipa",
     "tag": "install-noceternal",
-    "version": "0.5.21"
+    "version": "0.5.27"
   },
   "orbcrash": {
     "bundle": "com.pushpopinteractive.orbcrash",

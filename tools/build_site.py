@@ -8,7 +8,8 @@ EMAIL = "pushpopinteractive@gmail.com"
 
 GAMES = [
     dict(
-        slug="neonomaly", name="Neonomaly", status="soon",
+        slug="neonomaly", name="Neonomaly", status="out",
+        store="https://apps.apple.com/app/id6794191670",
         media="cover",
         tagline="You are the anomaly.",
         one="Tear through the machine in a warship of pure light — wipe squadrons, stack an obscene arsenal, and blow out the Core.",

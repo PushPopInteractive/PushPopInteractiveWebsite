@@ -131,6 +131,13 @@
     "tag": "install-toolchest",
     "version": "1.0"
   },
+  "totherescue": {
+    "bundle": "com.pushpop.totherescue",
+    "display": "To The Rescue",
+    "ipa": "ToTheRescue.ipa",
+    "tag": "install-totherescue",
+    "version": "1.0"
+  },
   "unearth": {
     "bundle": "com.pushpopinteractive.unearth",
     "display": "Unearth",

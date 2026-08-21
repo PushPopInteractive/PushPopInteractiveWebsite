@@ -21,6 +21,19 @@ GAMES = [
         shots=[],
     ),
     dict(
+        slug="ornithopter", name="Ornithopter", status="soon",
+        media="cover",
+        tagline="One tap to fly. A whole world to cross.",
+        one="A one-touch flight across the world of Returnity — 42 hand-pixelled zones and dungeons, stacking power-ups, and a little brass dragonfly you can trick out.",
+        tags=["One-Touch Arcade", "Pixel Art", "Set in Returnity"],
+        desc=[
+            "Ornithopter is a one-touch flyer set in the world of Returnity. Tap to flap a gold-and-emerald mechanical dragonfly through Greenfield's towers, the Greywake Crypt, the Wetlands, the Great Desert, the lava of the Volcanic Lands and the ice of the Frozen Tundra — 42 levels drawn in pixel art, every zone followed by its own dungeons, all the way to The Broken Halo.",
+            "It is never just pillars. Wraiths chase, orreries spin, lava surges, ceilings crush, gates slam, glowcaps light the dark. Fire a Shield, Steel Form, Triskelion, Greedy Ghost or Rewind Watch from the SKILL button — and stack them. Upgrade the Gold Magnet, unlock thirteen skins, and trade with the Traveling Merchant between zones.",
+            "No accounts, no ads, no internet required. Your progress stays on your device.",
+        ],
+        shots=[],
+    ),
+    dict(
         slug="returnity", name="Returnity", status="dev",
         media="cover",
         tagline="The dead don't stay down — and neither do you.",
@@ -395,7 +408,7 @@ def has_demo(slug):
 def build_index():
     cards = ""
     # playable games first (stable: curated order preserved within each group)
-    PINNED = ["orbcrash", "neonomaly"]          # featured, in this order
+    PINNED = ["orbcrash", "neonomaly", "ornithopter"]          # featured, in this order
     pinned = [g for s in PINNED for g in GAMES if g["slug"] == s]
     rest = [g for g in GAMES if g["slug"] not in PINNED]
     ordered = pinned + [g for g in rest if has_demo(g["slug"])] + [g for g in rest if not has_demo(g["slug"])]
@@ -445,7 +458,7 @@ def build_index():
 <section id="games">
   <div class="wrap wide">
     <p class="eyebrow">The catalog</p>
-    <h2 class="section-title">{len(GAMES)} games &amp; counting</h2>
+    <h2 class="section-title">A slew of games and then some</h2>
     <p class="section-sub">Some are nearly ready, some are still in the oven — all of them are being made with far too much care.</p>
     <div class="grid">{cards}
     </div>

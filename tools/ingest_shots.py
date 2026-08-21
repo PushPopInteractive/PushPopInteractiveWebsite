@@ -24,6 +24,7 @@ SLUGS = {
     "unearth": "unearth", "localmyth": "local-myth",
     "neonomaly": "neonomaly",
     "returnity": "returnity",
+    "ornithopter": "ornithopter",
 }
 EXTS = (".png", ".jpg", ".jpeg", ".webp", ".heic")
 

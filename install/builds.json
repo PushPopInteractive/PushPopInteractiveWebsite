@@ -1,4 +1,11 @@
 {
+  "companytime": {
+    "bundle": "com.pushpopinteractive.companytime",
+    "display": "CompanyTime",
+    "ipa": "companytime.ipa",
+    "tag": "install-companytime",
+    "version": "0.1.50"
+  },
   "developmenttracker": {
     "bundle": "com.pushpopinteractive.DevelopmentTracker",
     "display": "DevelopmentTracker",

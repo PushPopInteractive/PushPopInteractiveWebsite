@@ -1,4 +1,12 @@
 {
+  "aetherside": {
+    "build": "1787503574",
+    "bundle": "com.pushpopinteractive.aetherside",
+    "display": "Aetherside",
+    "ipa": "aetherside.ipa",
+    "tag": "install-aetherside",
+    "version": "1.0"
+  },
   "companytime": {
     "bundle": "com.pushpopinteractive.companytime",
     "display": "CompanyTime",

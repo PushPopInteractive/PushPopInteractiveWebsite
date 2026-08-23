@@ -16,7 +16,7 @@ install indexes. If a phone ever needs its OWN signed build, give its audience a
 These pages are NOT linked from the public site. Reach them at pushpopgames.com/install/.
 Run:  python3 tools/gen_install_pages.py
 """
-import html, json, os
+import hashlib, html, json, os
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 REPO = "PushPopInteractive/PushPopInteractiveWebsite"
@@ -30,6 +30,17 @@ DEFAULT_AUDIENCES = [
 
 def esc(s):
     return html.escape(str(s), quote=True)
+
+
+def icon_url(slug):
+    """Return a cache-busted URL when the game's icon exists."""
+    path = os.path.join(ROOT, "assets", "games", slug, "icon.png")
+    url = f"/assets/games/{slug}/icon.png"
+    if not os.path.exists(path):
+        return url
+    with open(path, "rb") as icon:
+        version = hashlib.sha256(icon.read()).hexdigest()[:12]
+    return f"{url}?v={version}"
 
 
 def rel_prefix(folder):
@@ -64,7 +75,7 @@ def game_page(slug, b, aud):
   a.back{{color:#7d7a96;font-size:.85rem;display:inline-block;margin-top:1.4rem}}
 </style></head><body>
 <div class="card">
-  <img src="/assets/games/{esc(slug)}/icon.png" alt="">
+  <img src="{esc(icon_url(slug))}" alt="">
   <div class="aud">{esc(aud['label'])}</div>
   <h1>{esc(b['display'])}</h1>
   <p>Tap Install to put this build on the phone. Version {esc(b.get('version','0.1.0'))}.</p>
@@ -91,7 +102,7 @@ def index_page(builds, aud, audiences):
         itms = f"itms-services://?action=download-manifest&amp;url={manifest}"
         rows += f"""
     <a class="row" href="{itms}">
-      <img src="/assets/games/{esc(slug)}/icon.png" alt="">
+      <img src="{esc(icon_url(slug))}" alt="">
       <span class="name">{esc(b['display'])}</span>
       <span class="tap">Install ›</span>
     </a>"""

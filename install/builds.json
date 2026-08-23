@@ -8,7 +8,7 @@
     "version": "1.0"
   },
   "bouncybot": {
-    "build": "1787510604",
+    "build": "1787510834",
     "bundle": "com.pushpopinteractive.bouncybot",
     "display": "BouncyBot",
     "ipa": "bouncybot.ipa",

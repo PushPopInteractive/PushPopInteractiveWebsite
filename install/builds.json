@@ -1,10 +1,10 @@
 {
-  "aetherside": {
-    "build": "1787532987",
-    "bundle": "com.pushpopinteractive.aetherside",
-    "display": "Aetherside",
-    "ipa": "aetherside.ipa",
-    "tag": "install-aetherside",
+  "aethercharge": {
+    "build": "1787583054",
+    "bundle": "com.pushpopinteractive.aethercharge",
+    "display": "AetherCharge",
+    "ipa": "aethercharge.ipa",
+    "tag": "install-aethercharge",
     "version": "1.0"
   },
   "bouncybot": {

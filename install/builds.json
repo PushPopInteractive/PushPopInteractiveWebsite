@@ -169,10 +169,10 @@
     "version": "1.0"
   },
   "totherescue": {
-    "build": "56057345.0.24",
+    "build": "56057345.0.25",
     "bundle": "com.pushpop.totherescue",
     "display": "To The Rescue",
-    "ipa": "ToTheRescue-56057345.0.24.ipa",
+    "ipa": "ToTheRescue-56057345.0.25.ipa",
     "tag": "install-totherescue",
     "version": "1.0"
   },

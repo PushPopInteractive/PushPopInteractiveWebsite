@@ -29,6 +29,13 @@
     "tag": "install-developmenttracker",
     "version": "1.9"
   },
+  "domainwar": {
+    "bundle": "com.pushpop.domainwar",
+    "display": "Domain War",
+    "ipa": "domainwar.ipa",
+    "tag": "install-domainwar",
+    "version": "0.1"
+  },
   "familytree": {
     "bundle": "com.pushpopinteractive.familytree",
     "display": "Family Tree",

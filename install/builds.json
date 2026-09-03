@@ -36,6 +36,13 @@
     "tag": "install-domainwar",
     "version": "0.1"
   },
+  "drachenvald": {
+    "bundle": "com.pushpopinteractive.drachenvald",
+    "display": "Drachenvald",
+    "ipa": "drachenvald.ipa",
+    "tag": "install-drachenvald",
+    "version": "0.1.0"
+  },
   "familytree": {
     "bundle": "com.pushpopinteractive.familytree",
     "display": "Family Tree",

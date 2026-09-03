@@ -21,7 +21,8 @@ GAMES = [
         shots=[],
     ),
     dict(
-        slug="ornithopter", name="Ornithopter", status="soon",
+        slug="ornithopter", name="Ornithopter", status="out",
+        store="https://apps.apple.com/app/id6804266549",
         media="cover",
         tagline="One tap to fly. A whole world to cross.",
         one="A one-touch flight across the world of Returnity — hand-pixelled zones and dungeons, stacking power-ups, and a little brass dragonfly you can trick out.",
@@ -605,7 +606,7 @@ def build_support():
     </details>
     <details>
       <summary>When is [game] coming out?</summary>
-      <p>Orbcrash is out now on the App Store. The rest of the catalog is in active development — email us if you'd like a heads-up when a specific game launches.</p>
+      <p>Orbcrash, Neonomaly, and Ornithopter are out now on the App Store. The rest of the catalog is in active development — email us if you'd like a heads-up when a specific game launches.</p>
     </details>
     <details>
       <summary>I found a bug — what should I include?</summary>

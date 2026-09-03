@@ -77,6 +77,13 @@
     "tag": "install-looseleaf-labyrinth",
     "version": "0.1.0"
   },
+  "lumilith": {
+    "bundle": "com.pushpopinteractive.lumilith",
+    "display": "Lumilith",
+    "ipa": "lumilith.ipa",
+    "tag": "install-lumilith",
+    "version": "0.1"
+  },
   "neonomaly": {
     "bundle": "com.pushpopinteractive.neonomaly",
     "display": "Neonomaly",

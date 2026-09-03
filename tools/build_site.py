@@ -34,13 +34,13 @@ GAMES = [
         shots=[],
     ),
     dict(
-        slug="returnity", name="Returnity", status="dev",
+        slug="brightbarrow", name="Brightbarrow", status="dev",
         media="cover",
         tagline="The dead don't stay down — and neither do you.",
         one="An action RPG of wildly different heroes, a world you walk end to end, and loot worth dying for — beat it and it comes back hungrier.",
         tags=["Action RPG", "Loot Hunt", "Class Builds"],
         desc=[
-            "Returnity is an action RPG cut to the old shape: click, carve, and watch the floor fill with drops. Every class splits down paths deep enough that a single run can only ever master one — a split-souled crusader, a magical girl who shifts into werewolf or demonkin, an ensouled golem, a Lorekeeper hiding the fastest blade alive. Specialize hard, or die generic.",
+            "Brightbarrow is an action RPG cut to the old shape: click, carve, and watch the floor fill with drops. Every class splits down paths deep enough that a single run can only ever master one — a split-souled crusader, a magical girl who shifts into werewolf or demonkin, an ensouled golem, a Lorekeeper hiding the fastest blade alive. Specialize hard, or die generic.",
             "A connected world you actually walk: the Blackmoor graveyard, the Mirefen swamp, sunny Goldfields, snow-capped Frostmere, and the dark beneath them — sunken crypts, lava-lit Emberfell, and a minotaur's Labyrinth that grows a new maze every time you enter. Last Lantern is home: healer, gambler, and a stash for the hoard.",
             "Loot in every shade from junk to legend, boss signature uniques, champion packs and roaming rares that hunt you back. Put the bosses down and the world doesn't end — it wakes up as NIGHTMARE, then HELL, rescaled and meaner, with better things to drop.",
         ],
@@ -686,4 +686,20 @@ with open(f"{ROOT}/privacy.html", "w") as f: f.write(build_privacy())
 with open(f"{ROOT}/404.html", "w") as f: f.write(build_404())
 for g in GAMES:
     with open(f"{ROOT}/games/{g['slug']}.html", "w") as f: f.write(build_game(g))
-print("wrote", 4 + len(GAMES), "pages")
+
+# Keep old bookmarks working after the game's rename.
+with open(f"{ROOT}/games/returnity.html", "w") as f:
+    f.write("""<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Brightbarrow — PushPop Interactive</title>
+<link rel="canonical" href="https://pushpopgames.com/games/brightbarrow.html">
+<meta http-equiv="refresh" content="0;url=/games/brightbarrow.html">
+</head>
+<body><p>This game is now <a href="/games/brightbarrow.html">Brightbarrow</a>.</p></body>
+</html>
+""")
+
+print("wrote", 5 + len(GAMES), "pages")

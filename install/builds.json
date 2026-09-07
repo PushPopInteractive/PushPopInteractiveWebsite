@@ -175,6 +175,14 @@
     "tag": "install-squishfall",
     "version": "1.0"
   },
+  "squishfall-3d": {
+    "build": "1788821488",
+    "bundle": "com.pushpopinteractive.squishfall3d",
+    "display": "Squishfall 3D",
+    "ipa": "Squishfall3D.ipa",
+    "tag": "install-squishfall-3d",
+    "version": "1.0"
+  },
   "toolchest": {
     "bundle": "com.pushpopinteractive.toolchest",
     "display": "ToolChest",

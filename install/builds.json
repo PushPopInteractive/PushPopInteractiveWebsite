@@ -176,11 +176,11 @@
     "version": "1.0"
   },
   "squishfall-3d": {
-    "build": "1788842506",
+    "build": "1788898848",
     "bundle": "com.pushpopinteractive.squishfall3d",
     "display": "Squishfall 3D",
-    "ipa": "Squishfall3D.ipa",
-    "manifest_url": "https://github.com/PushPopInteractive/PushPopInteractiveWebsite/releases/download/install-squishfall-3d/manifest.plist?build=1788842506",
+    "ipa": "Squishfall3D-1788898848.ipa",
+    "manifest_url": "https://github.com/PushPopInteractive/PushPopInteractiveWebsite/releases/download/install-squishfall-3d/manifest.plist?build=1788898848",
     "tag": "install-squishfall-3d",
     "version": "1.0"
   },

@@ -148,11 +148,11 @@
     "version": "0.2"
   },
   "smashem": {
-    "build": "2026091914",
+    "build": "2026092001",
     "bundle": "com.pushpopinteractive.smashem",
     "display": "Smash ’Em",
-    "ipa": "SmashEm-2026091914.ipa",
-    "manifest_url": "https://github.com/PushPopInteractive/PushPopInteractiveWebsite/releases/download/install-smashem/manifest.plist?build=2026091914",
+    "ipa": "SmashEm-2026092001.ipa",
+    "manifest_url": "https://github.com/PushPopInteractive/PushPopInteractiveWebsite/releases/download/install-smashem/manifest.plist?build=2026092001",
     "tag": "install-smashem",
     "version": "1.0"
   },

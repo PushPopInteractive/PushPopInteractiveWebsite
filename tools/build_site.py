@@ -316,6 +316,7 @@ def head(title, desc, canon, og_image, css_prefix=""):
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<meta name="google-site-verification" content="VbYNe3t9mxSbHY3nDKZhtOo-vyBzbAiuuZ9n2mIlkI4">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{esc(title)}</title>
 <meta name="description" content="{esc(desc)}">
@@ -632,14 +633,15 @@ def build_privacy():
 <div class="wrap page">
   <p class="eyebrow">PushPop Interactive</p>
   <h1>Privacy Policy</h1>
-  <p class="updated">Last updated July 2026 · Applies to all PushPop Interactive apps, including Orbcrash</p>
+  <p class="updated">Last updated July 2026 · Applies to PushPop Interactive offline games, including Orbcrash. Fireside is covered by its separate notice.</p>
 
   <div class="content-card">
-    <h2>The short version</h2>
-    <p><strong>PushPop Interactive games do not collect, store, transmit, or share any personal data.</strong> None at all.</p>
+    <p><strong>Using Fireside?</strong> Read the <a href="/fireside/privacy.html">Fireside Privacy Notice</a> for account storage, AI processing and sharing choices.</p>
+    <h2>The short version for our offline games</h2>
+    <p><strong>These offline games do not collect, store, transmit, or share any personal data.</strong> None at all.</p>
 
     <h2>No tracking, no accounts, no ads</h2>
-    <p>Our apps have no accounts, no analytics, no advertising, and no tracking of any kind.
+    <p>These offline games have no accounts, no analytics, no advertising, and no tracking of any kind.
     They do not connect to the internet, so nothing you do in our apps ever leaves your device.</p>
 
     <h2>Your game progress</h2>
@@ -660,7 +662,7 @@ def build_privacy():
 {footer()}"""
     return head(
         "Privacy Policy — PushPop Interactive",
-        "PushPop Interactive games collect no personal data of any kind. No tracking, no accounts, no ads.",
+        "Privacy for PushPop Interactive offline games. Fireside has a separate privacy notice.",
         f"{SITE}/privacy.html", f"{SITE}/assets/pushpop_logo.png",
     ) + body
 

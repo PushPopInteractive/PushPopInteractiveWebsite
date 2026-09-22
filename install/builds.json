@@ -51,11 +51,11 @@
     "version": "2.4"
   },
   "fireside": {
-    "build": "23",
+    "build": "24",
     "bundle": "com.pushpopinteractive.companytime.preview",
     "display": "Fireside",
-    "ipa": "Fireside-23.ipa",
-    "manifest_url": "https://github.com/PushPopInteractive/PushPopInteractiveWebsite/releases/download/install-fireside/manifest-23.plist",
+    "ipa": "Fireside-24.ipa",
+    "manifest_url": "https://github.com/PushPopInteractive/PushPopInteractiveWebsite/releases/download/install-fireside/manifest-24.plist",
     "tag": "install-fireside",
     "version": "0.1.0"
   },

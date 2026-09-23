@@ -55,7 +55,7 @@
     "bundle": "com.pushpopinteractive.fireside",
     "display": "Fireside",
     "ipa": "Fireside-31.ipa",
-    "manifest_url": "https://github.com/PushPopInteractive/PushPopInteractiveWebsite/releases/download/install-fireside/manifest-31.plist",
+    "manifest_url": "https://github.com/PushPopInteractive/PushPopInteractiveWebsite/releases/download/install-fireside/manifest.plist",
     "tag": "install-fireside",
     "version": "0.1.0"
   },

@@ -67,7 +67,7 @@
       <span class="name">Family Tree</span>
       <span class="tap">Install ›</span>
     </a>
-    <a class="row" href="itms-services://?action=download-manifest&amp;url=https://github.com/PushPopInteractive/PushPopInteractiveWebsite/releases/download/install-fireside/manifest.plist">
+    <a class="row" data-latest-install="fireside" data-install-manifest="https://github.com/PushPopInteractive/PushPopInteractiveWebsite/releases/download/install-fireside/manifest.plist" href="itms-services://?action=download-manifest&amp;url=https%3A%2F%2Fgithub.com%2FPushPopInteractive%2FPushPopInteractiveWebsite%2Freleases%2Fdownload%2Finstall-fireside%2Fmanifest.plist%3Fbuild%3D49">
       <img src="/assets/games/fireside/icon.png?v=4babefaf3c42" alt="">
       <span class="name">Fireside</span>
       <span class="tap">Install ›</span>
@@ -203,4 +203,5 @@
   var isSafari = /Safari/.test(ua) && !/CriOS|FxiOS|EdgiOS|Brave|Chrome|OPT\//.test(ua) && !navigator.brave;
   if (!isSafari) document.getElementById('notsafari').classList.add('show');
 </script>
+<script type="module" src="/tools/latest-install.mjs?v=1ab99d60d44c"></script>
 </body></html>

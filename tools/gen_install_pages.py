@@ -17,6 +17,7 @@ These pages are NOT linked from the public site. Reach them at pushpopgames.com/
 Run:  python3 tools/gen_install_pages.py
 """
 import hashlib, html, json, os
+from urllib.parse import urlencode
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 REPO = "PushPopInteractive/PushPopInteractiveWebsite"
@@ -48,9 +49,26 @@ def rel_prefix(folder):
     return "/"
 
 
+def install_attrs(slug, b, manifest):
+    if slug != "fireside":
+        return "", f"itms-services://?action=download-manifest&url={manifest}"
+    # Static fallback changes with each release; per-tap JS avoids cached iOS
+    # manifests even when Safari restores an older copy of this page.
+    fresh = manifest + ("&" if "?" in manifest else "?") + urlencode({"build": b.get("build", "latest")})
+    href = "itms-services://?" + urlencode({"action": "download-manifest", "url": fresh})
+    return f' data-latest-install="fireside" data-install-manifest="{esc(manifest)}"', href
+
+
+def latest_install_script():
+    path = os.path.join(ROOT, "tools", "latest-install.mjs")
+    with open(path, "rb") as file:
+        version = hashlib.sha256(file.read()).hexdigest()[:12]
+    return f'<script type="module" src="/tools/latest-install.mjs?v={version}"></script>'
+
+
 def game_page(slug, b, aud):
     manifest = b.get("manifest_url") or f"https://github.com/{REPO}/releases/download/{b.get('tag', 'install-'+slug) + aud.get('tag_suffix', '')}/manifest.plist"
-    itms = f"itms-services://?action=download-manifest&amp;url={manifest}"
+    latest_attrs, itms = install_attrs(slug, b, manifest)
     home = f"/install/{aud['folder']}/".replace("//", "/")
     return f"""<!doctype html>
 <html lang="en"><head>
@@ -81,7 +99,7 @@ def game_page(slug, b, aud):
   <p>Tap Install to put this build on the phone. Version {esc(b.get('version','0.1.0'))}.</p>
   <div id="notsafari" class="warn">⚠️ iPhone install links only work in <b>Safari</b>.
     Copy this page's link, open <b>Safari</b>, paste it, and tap Install there.</div>
-  <a class="btn" href="{itms}">Install on iPhone</a>
+  <a class="btn"{latest_attrs} href="{esc(itms)}">Install on iPhone</a>
   <small>Safari only, on Wi-Fi. Installs on registered iPhones only.</small>
   <a class="back" href="{home}">← All builds</a>
 </div>
@@ -90,6 +108,7 @@ def game_page(slug, b, aud):
   var isSafari = /Safari/.test(ua) && !/CriOS|FxiOS|EdgiOS|Brave|Chrome|OPT\\//.test(ua) && !navigator.brave;
   if (!isSafari) document.getElementById('notsafari').classList.add('show');
 </script>
+{latest_install_script()}
 </body></html>
 """
 
@@ -99,9 +118,9 @@ def index_page(builds, aud, audiences):
     for slug in sorted(builds, key=lambda s: builds[s]["display"].lower()):
         b = builds[slug]
         manifest = b.get("manifest_url") or f"https://github.com/{REPO}/releases/download/{b.get('tag', 'install-'+slug) + aud.get('tag_suffix', '')}/manifest.plist"
-        itms = f"itms-services://?action=download-manifest&amp;url={manifest}"
+        latest_attrs, itms = install_attrs(slug, b, manifest)
         rows += f"""
-    <a class="row" href="{itms}">
+    <a class="row"{latest_attrs} href="{esc(itms)}">
       <img src="{esc(icon_url(slug))}" alt="">
       <span class="name">{esc(b['display'])}</span>
       <span class="tap">Install ›</span>
@@ -154,6 +173,7 @@ def index_page(builds, aud, audiences):
   var isSafari = /Safari/.test(ua) && !/CriOS|FxiOS|EdgiOS|Brave|Chrome|OPT\\//.test(ua) && !navigator.brave;
   if (!isSafari) document.getElementById('notsafari').classList.add('show');
 </script>
+{latest_install_script()}
 </body></html>
 """
 

@@ -1,0 +1,4 @@
+<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><title>Fireside install-link check</title></head><body><p>Isolated test: installation is intercepted.</p><a data-latest-install="fireside" data-install-manifest="https://github.com/PushPopInteractive/PushPopInteractiveWebsite/releases/download/install-fireside/manifest.plist" href="itms-services://?action=download-manifest&url=old-build-46">Install Fireside</a><ol id="clicks"></ol><script type="module">
+import '../tools/latest-install.mjs';
+document.querySelector('a').addEventListener('click',event=>{event.preventDefault();const item=document.createElement('li');item.textContent=event.currentTarget.href;document.querySelector('#clicks').append(item)});
+</script></body></html>

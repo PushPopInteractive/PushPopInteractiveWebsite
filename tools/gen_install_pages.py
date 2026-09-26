@@ -50,7 +50,7 @@ def rel_prefix(folder):
 
 
 def install_attrs(slug, b, manifest):
-    if slug not in ("fireside", "toolchest"):
+    if slug not in ("fireside", "toolchest", "redspeak"):
         return "", f"itms-services://?action=download-manifest&url={manifest}"
     # Static fallback changes with each release; per-tap JS avoids cached iOS
     # manifests even when Safari restores an older copy of this page.

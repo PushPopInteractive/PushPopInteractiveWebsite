@@ -203,9 +203,10 @@
     "version": "1.0"
   },
   "toolchest": {
-    "bundle": "com.pushpopinteractive.toolchest",
+    "build": "1790445118",
+    "bundle": "com.pushpopinteractive.ToolChest",
     "display": "ToolChest",
-    "ipa": "ToolChest.ipa",
+    "ipa": "ToolChest-1790445118.ipa",
     "tag": "install-toolchest",
     "version": "1.0"
   },

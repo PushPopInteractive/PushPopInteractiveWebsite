@@ -50,13 +50,13 @@ def rel_prefix(folder):
 
 
 def install_attrs(slug, b, manifest):
-    if slug != "fireside":
+    if slug not in ("fireside", "toolchest"):
         return "", f"itms-services://?action=download-manifest&url={manifest}"
     # Static fallback changes with each release; per-tap JS avoids cached iOS
     # manifests even when Safari restores an older copy of this page.
     fresh = manifest + ("&" if "?" in manifest else "?") + urlencode({"build": b.get("build", "latest")})
     href = "itms-services://?" + urlencode({"action": "download-manifest", "url": fresh})
-    return f' data-latest-install="fireside" data-install-manifest="{esc(manifest)}"', href
+    return f' data-latest-install="{esc(slug)}" data-install-manifest="{esc(manifest)}"', href
 
 
 def latest_install_script():

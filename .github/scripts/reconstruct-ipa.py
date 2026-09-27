@@ -1,5 +1,5 @@
 """Reassemble an already-signed IPA from verified bytes; never build or resign it."""
-import hashlib,json,os,re,shutil,urllib.request,zipfile
+import hashlib,json,os,re,shutil,subprocess,urllib.request,zipfile
 from pathlib import Path
 
 def digest(path):
@@ -51,5 +51,16 @@ def main():
     base=Path(f'Fireside-{base_build}.ipa');output=Path(f'Fireside-{build}.ipa')
     if recipe['baseAsset']!=base.name or recipe['outputAsset']!=output.name:raise ValueError('Unexpected asset names')
     download(base_url+base.name,base);reconstruct(base,patch,output,expected)
-    print(json.dumps({'output':str(output),'bytes':output.stat().st_size,'sha256':digest(output),'byteIdentical':True}))
+    print(json.dumps({'output':str(output),'bytes':output.stat().st_size,'sha256':digest(output),'byteIdentical':True}),flush=True)
+    if os.environ.get('PUBLISH_VERIFIED_IPA')=='1':
+        repo='PushPopInteractive/PushPopInteractiveWebsite'
+        def remote():
+            assets=json.loads(subprocess.check_output(['gh','release','view','install-fireside','--repo',repo,'--json','assets']))['assets']
+            return next((a for a in assets if a['name']==output.name),None)
+        existing=remote()
+        if existing:
+            if existing.get('digest')!='sha256:'+expected:raise ValueError('Existing immutable IPA differs')
+        else:subprocess.run(['gh','release','upload','install-fireside',str(output),'--repo',repo],check=True)
+        if (remote() or {}).get('digest')!='sha256:'+expected:raise ValueError('Remote IPA checksum mismatch')
+        print('Published verified '+output.name,flush=True)
 if __name__=='__main__':main()

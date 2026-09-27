@@ -1,0 +1,40 @@
+name: Publish verified Fireside package
+on:
+  workflow_dispatch:
+    inputs:
+      build:
+        description: Already-signed Fireside build number
+        required: true
+        type: string
+      base_build:
+        description: Published base build number
+        required: true
+        type: string
+      delta_sha256:
+        description: Verified delta SHA256
+        required: true
+        type: string
+      ipa_sha256:
+        description: Expected signed IPA SHA256
+        required: true
+        type: string
+permissions:
+  contents: write
+concurrency:
+  group: fireside-package-publication
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Reassemble, verify and publish exact signed bytes
+        env:
+          RELEASE_BUILD: ${{ inputs.build }}
+          BASE_BUILD: ${{ inputs.base_build }}
+          DELTA_SHA256: ${{ inputs.delta_sha256 }}
+          IPA_SHA256: ${{ inputs.ipa_sha256 }}
+          GH_TOKEN: ${{ github.token }}
+          PUBLISH_VERIFIED_IPA: '1'
+        run: python3 .github/scripts/reconstruct-ipa.py

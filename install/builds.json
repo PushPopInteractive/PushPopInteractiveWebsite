@@ -143,10 +143,10 @@
     "version": "1.0"
   },
   "redspeak": {
-    "build": "6",
+    "build": "7",
     "bundle": "com.redspeak.app",
     "display": "RedSpeak",
-    "ipa": "RedSpeak-6.ipa",
+    "ipa": "RedSpeak-7.ipa",
     "tag": "install-redspeak",
     "version": "0.1.0"
   },

@@ -167,7 +167,7 @@
   "smashem": {
     "build": "2026092002",
     "bundle": "com.pushpopinteractive.smashem",
-    "display": "Smash ’Em",
+    "display": "Smash \u2019Em",
     "ipa": "SmashEm-2026092002.ipa",
     "manifest_url": "https://github.com/PushPopInteractive/PushPopInteractiveWebsite/releases/download/install-smashem/manifest.plist?build=2026092002",
     "tag": "install-smashem",

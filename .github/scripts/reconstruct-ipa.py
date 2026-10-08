@@ -1,5 +1,5 @@
 """Reassemble an already-signed IPA from verified bytes; never build or resign it."""
-import hashlib,json,os,re,shutil,subprocess,urllib.request,zipfile
+import hashlib,json,os,re,shutil,subprocess,urllib.request,urllib.error,zipfile
 from pathlib import Path
 
 def digest(path):
@@ -38,6 +38,26 @@ def download(url,target):
     with urllib.request.urlopen(url,timeout=180) as response,target.open('wb') as output:
         shutil.copyfileobj(response,output)
 
+def download_delta(base_url,patch,parts):
+    if parts=='auto':
+        try:
+            download(base_url+patch.name,patch)
+            return
+        except urllib.error.HTTPError as error:
+            if error.code!=404:raise
+        with urllib.request.urlopen(base_url+patch.name+'.parts.json',timeout=30) as response:
+            parts=str(json.loads(response.read(4096))['parts'])
+    if not re.fullmatch(r'[1-9]|1[0-6]',parts):
+        raise ValueError('Delta parts must be between 1 and 16')
+    if parts=='1':
+        download(base_url+patch.name,patch)
+        return
+    # Parts are only a transfer mechanism. The complete delta hash below remains mandatory.
+    with patch.open('wb') as output:
+        for index in range(1,int(parts)+1):
+            with urllib.request.urlopen(base_url+patch.name+f'.part{index:02}',timeout=180) as response:
+                shutil.copyfileobj(response,output)
+
 def main():
     build=os.environ['RELEASE_BUILD'];patch_hash=os.environ['DELTA_SHA256'];expected=os.environ['IPA_SHA256']
     if not re.fullmatch(r'[1-9][0-9]*',build) or not all(re.fullmatch(r'[a-f0-9]{64}',h) for h in [patch_hash,expected]):
@@ -45,7 +65,7 @@ def main():
     base_build=os.environ['BASE_BUILD']
     if not re.fullmatch(r'[1-9][0-9]*',base_build) or int(base_build)>=int(build):raise ValueError('Invalid base build')
     base_url='https://github.com/PushPopInteractive/PushPopInteractiveWebsite/releases/download/install-fireside/'
-    patch=Path(f'Fireside-{build}-delta-from-{base_build}.zip');download(base_url+patch.name,patch)
+    patch=Path(f'Fireside-{build}-delta-from-{base_build}.zip');download_delta(base_url,patch,os.environ.get('DELTA_PARTS') or 'auto')
     if digest(patch)!=patch_hash:raise ValueError('Delta checksum mismatch')
     with zipfile.ZipFile(patch) as archive:recipe=json.loads(archive.read('recipe.json'))
     base=Path(f'Fireside-{base_build}.ipa');output=Path(f'Fireside-{build}.ipa')

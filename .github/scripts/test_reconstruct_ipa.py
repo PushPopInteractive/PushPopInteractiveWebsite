@@ -3,6 +3,19 @@ from unittest.mock import patch
 from pathlib import Path
 spec=importlib.util.spec_from_file_location('assembler',Path(__file__).with_name('reconstruct-ipa.py'));assembler=importlib.util.module_from_spec(spec);spec.loader.exec_module(assembler)
 class ExactPackage(unittest.TestCase):
+    def test_unsplit_missing_uses_bounded_part_descriptor(self):
+        with tempfile.TemporaryDirectory() as d:
+            output=Path(d)/'delta.zip'
+            missing=assembler.urllib.error.HTTPError('https://example.test/delta.zip',404,'missing',None,None)
+            with patch.object(assembler.urllib.request,'urlopen',side_effect=[missing,io.BytesIO(b'{"parts":2}'),io.BytesIO(b'ab'),io.BytesIO(b'cd')]):
+                assembler.download_delta('https://example.test/',output,'auto')
+            self.assertEqual(output.read_bytes(),b'abcd')
+    def test_server_error_does_not_select_other_source(self):
+        with tempfile.TemporaryDirectory() as d:
+            error=assembler.urllib.error.HTTPError('https://example.test/delta.zip',503,'unavailable',None,None)
+            with patch.object(assembler.urllib.request,'urlopen',side_effect=error) as get:
+                with self.assertRaises(assembler.urllib.error.HTTPError):assembler.download_delta('https://example.test/',Path(d)/'delta.zip','auto')
+            self.assertEqual(get.call_count,1)
     def test_multipart_download_preserves_order(self):
         with tempfile.TemporaryDirectory() as d:
             output=Path(d)/'delta.zip'

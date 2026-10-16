@@ -28,6 +28,24 @@ class ExactPackage(unittest.TestCase):
             for value in ['0','17','-1','2.5','01','x']:
                 with self.assertRaises(ValueError):assembler.download_delta('https://example.test/',Path('unused'),value)
             get.assert_not_called()
+    def test_large_signed_package_parts_preserve_every_byte(self):
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d);package=root/'Fireside-89.ipa';raw=b'signed-archive-kept-exact';package.write_bytes(raw)
+            record=assembler.package_parts(package,part_bytes=7)
+            self.assertEqual(b''.join((root/p['name']).read_bytes() for p in record['parts']),raw)
+            self.assertEqual(record['sha256'],hashlib.sha256(raw).hexdigest())
+            self.assertEqual(record['bytes'],len(raw))
+            for p in record['parts']:self.assertEqual(assembler.digest(root/p['name']),p['sha256'])
+    def test_multipart_base_download_checks_each_part_and_complete_package(self):
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d);source=root/'Fireside-89.ipa';source.write_bytes(b'exact-signed-package')
+            record=assembler.package_parts(source,part_bytes=8);output=root/'copy'/'Fireside-89.ipa';output.parent.mkdir()
+            missing=assembler.urllib.error.HTTPError('https://example.test/',404,'missing',None,None)
+            responses=[missing,io.BytesIO(json.dumps(record).encode())]+[io.BytesIO((root/p['name']).read_bytes()) for p in record['parts']]
+            with patch.object(assembler.urllib.request,'urlopen',side_effect=responses):assembler.download_package('https://example.test/',output)
+            self.assertEqual(output.read_bytes(),source.read_bytes())
+            bad=[missing,io.BytesIO(json.dumps(record).encode()),io.BytesIO(b'corrupt')]
+            with patch.object(assembler.urllib.request,'urlopen',side_effect=bad),self.assertRaises(ValueError):assembler.download_package('https://example.test/',output)
     def fixture(self,root,data=b'XY',segments=None):
         base=root/'base';base.write_bytes(b'abcdefgh');patch=root/'patch.zip';expected=hashlib.sha256(b'abcXYfgh').hexdigest()
         recipe={'baseSha256':assembler.digest(base),'outputSha256':expected,'outputBytes':8,'segments':segments or [['base',0,3],['patch',0,2],['base',5,3]]}

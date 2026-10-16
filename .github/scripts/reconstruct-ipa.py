@@ -58,6 +58,46 @@ def download_delta(base_url,patch,parts):
             with urllib.request.urlopen(base_url+patch.name+f'.part{index:02}',timeout=180) as response:
                 shutil.copyfileobj(response,output)
 
+def package_parts(path,part_bytes=1500000000):
+    """Split signed bytes for hosting, without changing or resigning the IPA."""
+    parts=[]
+    with path.open('rb') as source:
+        index=0
+        while True:
+            first=source.read(min(1024*1024,part_bytes))
+            if not first:break
+            index+=1;name=path.name+f'.part{index:02}';target=path.with_name(name);h=hashlib.sha256();size=0
+            with target.open('wb') as output:
+                block=first
+                while block:
+                    output.write(block);h.update(block);size+=len(block)
+                    if size==part_bytes:break
+                    block=source.read(min(1024*1024,part_bytes-size))
+            parts.append({'name':name,'bytes':size,'sha256':h.hexdigest()})
+    result={'bytes':path.stat().st_size,'sha256':digest(path),'parts':parts}
+    path.with_name(path.name+'.parts.json').write_text(json.dumps(result,indent=2)+'\n')
+    return result
+
+def download_package(base_url,target):
+    try:
+        download(base_url+target.name,target)
+        return
+    except urllib.error.HTTPError as error:
+        if error.code!=404:raise
+    with urllib.request.urlopen(base_url+target.name+'.parts.json',timeout=30) as response:record=json.loads(response.read(16384))
+    if not isinstance(record.get('parts'),list) or not 1<=len(record['parts'])<=8:raise ValueError('Invalid package descriptor')
+    with target.open('wb') as output:
+        for index,part in enumerate(record['parts'],1):
+            if part['name']!=target.name+f'.part{index:02}' or not isinstance(part['bytes'],int) or not 0<part['bytes']<2**31 or not re.fullmatch(r'[a-f0-9]{64}',part['sha256']):raise ValueError('Invalid package part')
+            h=hashlib.sha256();size=0
+            with urllib.request.urlopen(base_url+part['name'],timeout=180) as response:
+                while block:=response.read(1024*1024):
+                    size+=len(block)
+                    if size>part['bytes']:raise ValueError('Package part exceeds descriptor')
+                    h.update(block);output.write(block)
+            if size!=part['bytes'] or h.hexdigest()!=part['sha256']:raise ValueError('Package part checksum mismatch')
+    if target.stat().st_size!=record['bytes'] or digest(target)!=record['sha256']:raise ValueError('Package checksum mismatch')
+
 def main():
     build=os.environ['RELEASE_BUILD'];patch_hash=os.environ['DELTA_SHA256'];expected=os.environ['IPA_SHA256']
     if not re.fullmatch(r'[1-9][0-9]*',build) or not all(re.fullmatch(r'[a-f0-9]{64}',h) for h in [patch_hash,expected]):
@@ -70,17 +110,25 @@ def main():
     with zipfile.ZipFile(patch) as archive:recipe=json.loads(archive.read('recipe.json'))
     base=Path(f'Fireside-{base_build}.ipa');output=Path(f'Fireside-{build}.ipa')
     if recipe['baseAsset']!=base.name or recipe['outputAsset']!=output.name:raise ValueError('Unexpected asset names')
-    download(base_url+base.name,base);reconstruct(base,patch,output,expected)
+    download_package(base_url,base);reconstruct(base,patch,output,expected)
     print(json.dumps({'output':str(output),'bytes':output.stat().st_size,'sha256':digest(output),'byteIdentical':True}),flush=True)
     if os.environ.get('PUBLISH_VERIFIED_IPA')=='1':
         repo='PushPopInteractive/PushPopInteractiveWebsite'
-        def remote():
-            assets=json.loads(subprocess.check_output(['gh','release','view','install-fireside','--repo',repo,'--json','assets']))['assets']
-            return next((a for a in assets if a['name']==output.name),None)
-        existing=remote()
-        if existing:
-            if existing.get('digest')!='sha256:'+expected:raise ValueError('Existing immutable IPA differs')
-        else:subprocess.run(['gh','release','upload','install-fireside',str(output),'--repo',repo],check=True)
-        if (remote() or {}).get('digest')!='sha256:'+expected:raise ValueError('Remote IPA checksum mismatch')
-        print('Published verified '+output.name,flush=True)
+        def publish(asset,expected_hash):
+            def remote():
+                assets=json.loads(subprocess.check_output(['gh','release','view','install-fireside','--repo',repo,'--json','assets']))['assets']
+                return next((a for a in assets if a['name']==asset.name),None)
+            existing=remote()
+            if existing:
+                if existing.get('digest')!='sha256:'+expected_hash:raise ValueError('Existing immutable asset differs')
+            else:subprocess.run(['gh','release','upload','install-fireside',str(asset),'--repo',repo],check=True)
+            if (remote() or {}).get('digest')!='sha256:'+expected_hash:raise ValueError('Remote asset checksum mismatch')
+        if output.stat().st_size>=2**31:
+            record=package_parts(output)
+            for part in record['parts']:publish(output.with_name(part['name']),part['sha256'])
+            descriptor=output.with_name(output.name+'.parts.json');publish(descriptor,digest(descriptor))
+            print('Published verified signed package parts: '+output.name,flush=True)
+        else:
+            publish(output,expected)
+            print('Published verified '+output.name,flush=True)
 if __name__=='__main__':main()

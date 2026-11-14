@@ -94,10 +94,10 @@
     "version": "0.1.0"
   },
   "lumilith": {
-    "build": "1794615695",
+    "build": "1794673992",
     "bundle": "com.pushpopinteractive.lumilith",
     "display": "Lumilith",
-    "ipa": "Lumilith-1794615695.ipa",
+    "ipa": "Lumilith-1794673992.ipa",
     "manifest_url": "https://github.com/PushPopInteractive/PushPopInteractiveWebsite/releases/download/install-lumilith/manifest.plist",
     "tag": "install-lumilith",
     "version": "0.1"

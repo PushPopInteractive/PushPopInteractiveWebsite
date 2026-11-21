@@ -94,10 +94,10 @@
     "version": "0.1.0"
   },
   "lumilith": {
-    "build": "1795197358",
+    "build": "1795228885",
     "bundle": "com.pushpopinteractive.lumilith",
     "display": "Lumilith",
-    "ipa": "Lumilith-1795197358.ipa",
+    "ipa": "Lumilith-1795228885.ipa",
     "manifest_url": "https://github.com/PushPopInteractive/PushPopInteractiveWebsite/releases/download/install-lumilith/manifest.plist",
     "tag": "install-lumilith",
     "version": "0.1"
@@ -169,7 +169,7 @@
   "smashem": {
     "build": "2026092002",
     "bundle": "com.pushpopinteractive.smashem",
-    "display": "Smash \u2019Em",
+    "display": "Smash ’Em",
     "ipa": "SmashEm-2026092002.ipa",
     "manifest_url": "https://github.com/PushPopInteractive/PushPopInteractiveWebsite/releases/download/install-smashem/manifest.plist?build=2026092002",
     "tag": "install-smashem",
